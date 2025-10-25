@@ -3,11 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/opcMejoresResultados"
+        android:title="@string/txtOpcionMejoresResultados"
+        android:icon="@drawable/podium_24px"
+        android:orderInCategory="1"
+        app:showAsAction="always"
+        />
+
+    <item
         android:id="@+id/opcReiniciarPartida"
         android:title="@string/txtReiniciarPartida"
         android:icon="@drawable/restart_alt_24px"
         android:orderInCategory="5"
-        app:showAsAction="ifRoom|withText"
+        app:showAsAction="always"
         />
 
     <item
@@ -15,35 +23,33 @@
         android:title="@string/txtOpcionGuardar"
         android:icon="@drawable/save_24px"
         android:orderInCategory="10"
-        app:showAsAction="ifRoom"
-        />
-
-    <item
-        android:id="@+id/opcRecuperarPartida"
-        android:title="@string/txtOpcionRecuperar"
-        android:icon="@drawable/settings_backup_restore_24px"
-        android:orderInCategory="15"
-        app:showAsAction="ifRoom"
-        />
-
-    <item
-        android:id="@+id/opcMejoresResultados"
-        android:title="@string/txtOpcionMejoresResultados"
-        android:orderInCategory="20"
+        app:showAsAction="always"
         />
 
     <item
         android:id="@+id/opcAjustes"
-        android:title="@string/preferencesText"
-        android:icon="@android:drawable/ic_menu_preferences"
-        android:orderInCategory="100"
-        />
+        android:title="@string/txtAjustes"
+        android:icon="@drawable/settings_24px"
+        android:orderInCategory="20"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/opcCargarPartida"
+                android:title="@string/txtOpcionCargar"
+                android:icon="@drawable/upload_24px"
+                />
 
-    <item
-        android:id="@+id/opcAcercaDe"
-        android:title="@string/aboutText"
-        android:icon="@android:drawable/ic_menu_info_details"
-        android:orderInCategory="200"
-        />
+            <item
+                android:id="@+id/opcTemas"
+                android:title="@string/txtTemas"
+                android:icon="@drawable/palette_24px"
+            />
 
+            <item
+                android:id="@+id/opcAcercaDe"
+                android:title="@string/aboutText"
+                android:icon="@drawable/info_24px"
+                />
+        </menu>
+    </item>
 </menu>
