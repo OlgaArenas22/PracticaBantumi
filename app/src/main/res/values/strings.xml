@@ -15,8 +15,10 @@
     <!-- Opciones -->
     <string name="txtReiniciarPartida">Reiniciar</string>
     <string name="txtOpcionGuardar">Guardar Partida</string>
-    <string name="txtOpcionRecuperar">Recuperar Partida</string>
+    <string name="txtOpcionCargar">Cargar Partida</string>
     <string name="txtOpcionMejoresResultados">Mejores Resultados</string>
+    <string name="txtAjustes">Ajustes</string>
+    <string name="txtTemas">Temas</string>
 
     <!-- Acerca de -->
     <string name="aboutText">Acerca de</string>

@@ -17,5 +17,11 @@
         <!--  Asocia la acción al pulsar sobre un hueco -->
         <item name="android:onClick">huecoPulsado</item>
     </style>
+    <style name="ToolbarTextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="fontFamily">@font/komikax</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
 
 </resources>
