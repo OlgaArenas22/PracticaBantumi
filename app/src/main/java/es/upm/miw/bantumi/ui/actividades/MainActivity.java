@@ -1,23 +1,22 @@
 package es.upm.miw.bantumi.ui.actividades;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Locale;
 
@@ -38,13 +37,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Permite cambiar el nombre del jugador al empezar el juego
+        mostrarDialogoNombreJugador();
 
         // Instancia el ViewModel y el juego, y asigna observadores a los huecos
         numInicialSemillas = getResources().getInteger(R.integer.intNumInicialSemillas);
@@ -52,6 +49,33 @@ public class MainActivity extends AppCompatActivity {
         juegoBantumi = new JuegoBantumi(bantumiVM, JuegoBantumi.Turno.turnoJ1, numInicialSemillas);
         crearObservadores();
     }
+
+    private void mostrarDialogoNombreJugador() {
+        View content = getLayoutInflater().inflate(R.layout.dialog_player_name, null);
+        TextInputEditText etNombre = content.findViewById(R.id.etPlayerName);
+        Button btnConfirmar = content.findViewById(R.id.btnConfirmarNombre);
+
+        AlertDialog dialog = new com.google.android.material.dialog.MaterialAlertDialogBuilder(this, R.style.TransparentDialog)
+                .setView(content)
+                .setCancelable(false)
+                .create();
+
+        btnConfirmar.setOnClickListener(v -> {
+            String nombre = etNombre.getText() == null ? "" : etNombre.getText().toString().trim();
+            if (nombre.isEmpty()) {
+                nombre = getString(R.string.txtPlayer1);
+            }
+            // Pinta el nombre en la cabecera
+            TextView tvJugador1 = findViewById(R.id.tvPlayer1);
+            tvJugador1.setText(nombre);
+
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+
 
     /**
      * Crea y subscribe los observadores asignados a las posiciones del tablero.
