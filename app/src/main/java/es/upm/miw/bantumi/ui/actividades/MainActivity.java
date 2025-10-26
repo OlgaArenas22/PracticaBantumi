@@ -1,15 +1,22 @@
 package es.upm.miw.bantumi.ui.actividades;
 
 import androidx.appcompat.app.AlertDialog;
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Chronometer;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -33,20 +40,58 @@ public class MainActivity extends AppCompatActivity {
     public JuegoBantumi juegoBantumi;
     private BantumiViewModel bantumiVM;
     private Turno turnoInicial;
+
+    private Chronometer cronometro;
     int numInicialSemillas;
 
+    @SuppressLint("DefaultLocale")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        cronometro = findViewById(R.id.cronometro);
+        //Formato del cronómetro
+        cronometro.setOnChronometerTickListener(ch -> {
+            long elapsed = SystemClock.elapsedRealtime() - ch.getBase();
+            long s = elapsed / 1000;
+            long h = s / 3600;
+            long m = (s % 3600) / 60;
+            long sec = s % 60;
+            if (h > 0) {
+                ch.setText(String.format("%d:%02d:%02d", h, m, sec));
+            } else {
+                ch.setText(String.format("%02d:%02d", m, sec));
+            }
+        });
+
+        resetCronometro();
 
         //Permite cambiar el nombre del jugador al empezar el juego
         new ElegirNombreDialog().show(getSupportFragmentManager(), "DIALOG_NOMBRE");
     }
 
+    public void startCronometro() {
+        cronometro.setBase(SystemClock.elapsedRealtime());
+        cronometro.start();
+    }
+
+    private void stopCronometro() {
+        cronometro.stop();
+    }
+
+    public void resetCronometro() {
+        cronometro.stop();
+        cronometro.setBase(SystemClock.elapsedRealtime());
+    }
     public void onMostrarElegirModo() {
         new ElegirModoDialog().show(getSupportFragmentManager(), "DIALOG_MODO");
     }
@@ -71,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onIniciarPartida(Turno turno){
         this.turnoInicial = turno;
+        resetCronometro();
+        startCronometro();
         bantumiVM = new ViewModelProvider(this).get(BantumiViewModel.class);
         juegoBantumi = new JuegoBantumi(bantumiVM, turnoInicial, numInicialSemillas);
         crearObservadores();
@@ -157,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
 //            case R.id.opcAjustes: // @todo Preferencias
@@ -212,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
      * El juego ha terminado. Volver a jugar?
      */
     private void finJuego() {
+        stopCronometro();
         String texto = (juegoBantumi.getSemillas(6) > 6 * numInicialSemillas)
                 ? "Gana Jugador 1"
                 : "Gana Jugador 2";

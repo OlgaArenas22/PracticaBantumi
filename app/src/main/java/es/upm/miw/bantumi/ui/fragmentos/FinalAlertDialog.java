@@ -34,6 +34,8 @@ public class FinalAlertDialog extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                main.resetCronometro();
+                                main.startCronometro();
                                 main.juegoBantumi.inicializar(JuegoBantumi.Turno.turnoJ1);
                             }
                         }
