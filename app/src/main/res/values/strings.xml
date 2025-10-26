@@ -2,13 +2,20 @@
     <string name="app_name">Bantumi</string>
 
     <string name="txtPlayer1">Jugador 1</string>
-    <string name="hintPlayer1Name">Jugador 1</string>
     <string name="txtPlayer2">Jugador 2</string>
     <string name="txtBtnReset">Reset</string>
+
+    <!-- Botones interfaz -->
     <string name="btnConfirmar">Confirmar</string>
     <string name="btnAceptar">Aceptar</string>
     <string name="btnCancelar">Cancelar</string>
+
+    <!-- Cambiar nombre jugador-->
+    <string name="hintPlayer1Name">Jugador 1</string>
     <string name="txtCambiarNombre">Nombre del jugador: </string>
+
+    <!-- Mensajes elegir jugador que empieza -->
+    <string name="txtStartingPlayer">¿Qué jugador debería empezar?</string>
 
     <!-- Valores del juego -->
     <integer name="intNumInicialSemillas">4</integer>

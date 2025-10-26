@@ -15,14 +15,18 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Locale;
 
+import es.upm.miw.bantumi.ui.fragmentos.ElegirNombreDialog;
+import es.upm.miw.bantumi.ui.fragmentos.ElegirTurnoDialog;
 import es.upm.miw.bantumi.ui.fragmentos.FinalAlertDialog;
 import es.upm.miw.bantumi.R;
 import es.upm.miw.bantumi.dominio.logica.JuegoBantumi;
+import es.upm.miw.bantumi.dominio.logica.JuegoBantumi.Turno;
 import es.upm.miw.bantumi.ui.viewmodel.BantumiViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected final String LOG_TAG = "MiW";
     public JuegoBantumi juegoBantumi;
     private BantumiViewModel bantumiVM;
+    private Turno turnoInicial;
     int numInicialSemillas;
 
     @Override
@@ -41,42 +46,29 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //Permite cambiar el nombre del jugador al empezar el juego
-        mostrarDialogoNombreJugador();
+        new ElegirNombreDialog().show(getSupportFragmentManager(), "DIALOG_NOMBRE");
+    }
 
-        // Instancia el ViewModel y el juego, y asigna observadores a los huecos
+    public void onMostrarElegirTurno() {
+        new ElegirTurnoDialog(getNombreJugador1())
+                .show(getSupportFragmentManager(), "DIALOG_TURNO");
+    }
+
+    private String getNombreJugador1() {
+        TextView tvJugador1 = findViewById(R.id.tvPlayer1);
+        return tvJugador1.getText().toString();
+    }
+
+    /**
+     * Instancia el ViewModel y el juego, y asigna observadores a los huecos
+     */
+    public void onIniciarPartida(Turno turno){
+        this.turnoInicial = turno;
         numInicialSemillas = getResources().getInteger(R.integer.intNumInicialSemillas);
         bantumiVM = new ViewModelProvider(this).get(BantumiViewModel.class);
-        juegoBantumi = new JuegoBantumi(bantumiVM, JuegoBantumi.Turno.turnoJ1, numInicialSemillas);
+        juegoBantumi = new JuegoBantumi(bantumiVM, turnoInicial, numInicialSemillas);
         crearObservadores();
     }
-
-    private void mostrarDialogoNombreJugador() {
-        View content = getLayoutInflater().inflate(R.layout.dialog_player_name, null);
-        TextInputEditText etNombre = content.findViewById(R.id.etPlayerName);
-        Button btnConfirmar = content.findViewById(R.id.btnConfirmarNombre);
-
-        AlertDialog dialog = new com.google.android.material.dialog.MaterialAlertDialogBuilder(this, R.style.TransparentDialog)
-                .setView(content)
-                .setCancelable(false)
-                .create();
-
-        btnConfirmar.setOnClickListener(v -> {
-            String nombre = etNombre.getText() == null ? "" : etNombre.getText().toString().trim();
-            if (nombre.isEmpty()) {
-                nombre = getString(R.string.txtPlayer1);
-            }
-            // Pinta el nombre en la cabecera
-            TextView tvJugador1 = findViewById(R.id.tvPlayer1);
-            tvJugador1.setText(nombre);
-
-            dialog.dismiss();
-        });
-
-        dialog.show();
-    }
-
-
-
     /**
      * Crea y subscribe los observadores asignados a las posiciones del tablero.
      * Si se modifica el contenido del tablero -> se actualiza la vista.

@@ -30,7 +30,6 @@
                 app:title="Bantumi"
                 app:titleCentered="false"
                 app:titleTextAppearance="@style/ToolbarTextAppearance"
-                app:titleTextColor="@color/black"
                 app:menu="@menu/opciones_menu" />
         </FrameLayout>
     </com.google.android.material.appbar.AppBarLayout>
