@@ -6,9 +6,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_miw_launcher"
+        android:icon="@mipmap/ic_bantumi_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_miw_launcher_rounded"
+        android:roundIcon="@mipmap/ic_bantumi_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.Bantumi"
         tools:targetApi="s">
