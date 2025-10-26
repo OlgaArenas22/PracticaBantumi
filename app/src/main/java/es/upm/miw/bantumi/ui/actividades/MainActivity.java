@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected final String LOG_TAG = "MiW";
     public JuegoBantumi juegoBantumi;
     private BantumiViewModel bantumiVM;
+    private JuegoBantumi.Turno turnoInicial;
     int numInicialSemillas;
 
     @Override
@@ -42,12 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Permite cambiar el nombre del jugador al empezar el juego
         mostrarDialogoNombreJugador();
-
-        // Instancia el ViewModel y el juego, y asigna observadores a los huecos
-        numInicialSemillas = getResources().getInteger(R.integer.intNumInicialSemillas);
-        bantumiVM = new ViewModelProvider(this).get(BantumiViewModel.class);
-        juegoBantumi = new JuegoBantumi(bantumiVM, JuegoBantumi.Turno.turnoJ1, numInicialSemillas);
-        crearObservadores();
     }
 
     private void mostrarDialogoNombreJugador() {
@@ -62,21 +58,62 @@ public class MainActivity extends AppCompatActivity {
 
         btnConfirmar.setOnClickListener(v -> {
             String nombre = etNombre.getText() == null ? "" : etNombre.getText().toString().trim();
-            if (nombre.isEmpty()) {
-                nombre = getString(R.string.txtPlayer1);
-            }
             // Pinta el nombre en la cabecera
             TextView tvJugador1 = findViewById(R.id.tvPlayer1);
             tvJugador1.setText(nombre);
 
             dialog.dismiss();
+            //Elección de turno
+            mostrarDialogoQuienEmpieza();
         });
 
         dialog.show();
     }
 
+    private void mostrarDialogoQuienEmpieza() {
+        View view = getLayoutInflater().inflate(R.layout.dialog_starting_player, null);
+        Button btnJ1 = view.findViewById(R.id.btnPlayer1);
+        Button btnJ2 = view.findViewById(R.id.btnPlayer2);
 
+        btnJ1.setText(getNombreJugador1());
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this, R.style.TransparentDialog)
+                .setView(view)
+                .setCancelable(false)
+                .create();
 
+        btnJ1.setOnClickListener(v -> {
+            turnoInicial = JuegoBantumi.Turno.turnoJ1;
+            dialog.dismiss();
+            iniciarPartida();
+        });
+
+        btnJ2.setOnClickListener(v -> {
+            turnoInicial = JuegoBantumi.Turno.turnoJ2;
+            dialog.dismiss();
+            iniciarPartida();
+        });
+
+        dialog.show();
+    }
+
+    /**
+     * Devuelve el nombre actual del jugador 1
+     * @return String con el nombre del jugador 1
+     */
+    private String getNombreJugador1() {
+        TextView tvJugador1 = findViewById(R.id.tvPlayer1);
+        return tvJugador1.getText().toString();
+    }
+
+    /**
+     * Instancia el ViewModel y el juego, y asigna observadores a los huecos
+     */
+    private void iniciarPartida(){
+        numInicialSemillas = getResources().getInteger(R.integer.intNumInicialSemillas);
+        bantumiVM = new ViewModelProvider(this).get(BantumiViewModel.class);
+        juegoBantumi = new JuegoBantumi(bantumiVM, turnoInicial, numInicialSemillas);
+        crearObservadores();
+    }
     /**
      * Crea y subscribe los observadores asignados a las posiciones del tablero.
      * Si se modifica el contenido del tablero -> se actualiza la vista.

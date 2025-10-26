@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="20dp"
-    android:background="@drawable/bg_dialog_change_name">
+    android:background="@drawable/bg_dialog">
 
     <!-- Título -->
     <TextView
@@ -54,13 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:backgroundTint="@color/teal_700"
+        style="@style/ConfirmButtonStyle"
         android:text="@string/btnConfirmar"
-        android:textColor="@color/white"
-        android:fontFamily="@font/monofonto"
-        android:textStyle="bold"
-        android:paddingHorizontal="24dp"
-        android:paddingVertical="8dp"
-        android:elevation="4dp"
         android:background="@drawable/bg_confirm_button"/>
 </LinearLayout>
