@@ -42,7 +42,7 @@ public class ElegirNombreDialog extends DialogFragment {
             if (getActivity() instanceof MainActivity) {
                 MainActivity main = (MainActivity) getActivity();
                 ((TextView) main.findViewById(R.id.tvPlayer1)).setText(nombreNuevo);
-                main.onMostrarElegirTurno();
+                main.onMostrarElegirModo();
             }
             dialog.dismiss();
         });
