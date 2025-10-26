@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,12 +14,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Locale;
 
+import es.upm.miw.bantumi.ui.fragmentos.ElegirModoDialog;
 import es.upm.miw.bantumi.ui.fragmentos.ElegirNombreDialog;
 import es.upm.miw.bantumi.ui.fragmentos.ElegirTurnoDialog;
 import es.upm.miw.bantumi.ui.fragmentos.FinalAlertDialog;
@@ -49,6 +47,15 @@ public class MainActivity extends AppCompatActivity {
         new ElegirNombreDialog().show(getSupportFragmentManager(), "DIALOG_NOMBRE");
     }
 
+    public void onMostrarElegirModo() {
+        new ElegirModoDialog().show(getSupportFragmentManager(), "DIALOG_MODO");
+    }
+    public void onModoSeleccionado(int semillasIniciales) {
+        // Cambia dinámicamente las semillas iniciales según el modo
+        numInicialSemillas = semillasIniciales;
+        onMostrarElegirTurno();
+    }
+
     public void onMostrarElegirTurno() {
         new ElegirTurnoDialog(getNombreJugador1())
                 .show(getSupportFragmentManager(), "DIALOG_TURNO");
@@ -64,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onIniciarPartida(Turno turno){
         this.turnoInicial = turno;
-        numInicialSemillas = getResources().getInteger(R.integer.intNumInicialSemillas);
         bantumiVM = new ViewModelProvider(this).get(BantumiViewModel.class);
         juegoBantumi = new JuegoBantumi(bantumiVM, turnoInicial, numInicialSemillas);
         crearObservadores();

@@ -18,8 +18,13 @@
     <string name="txtStartingPlayer">¿Qué jugador debería empezar?</string>
 
     <!-- Valores del juego -->
-    <integer name="intNumInicialSemillas">4</integer>
     <string name="txtInitialScore">0</string>
+
+    <!-- Modos de juego -->
+    <string name="txtModoJuego">Elige el modo de juego:</string>
+    <string name="txtClasico">Clásico</string>
+    <string name="txtRapido">Rápido</string>
+    <string name="txtFiebre">Fiebre de la semilla</string>
 
     <!-- Mensaje opción sin implementar -->
     <string name="txtSinImplementar">¡No implementado aún!</string>
