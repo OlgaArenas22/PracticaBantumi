@@ -32,6 +32,7 @@ import es.upm.miw.bantumi.ui.fragmentos.FinalAlertDialog;
 import es.upm.miw.bantumi.R;
 import es.upm.miw.bantumi.dominio.logica.JuegoBantumi;
 import es.upm.miw.bantumi.dominio.logica.JuegoBantumi.Turno;
+import es.upm.miw.bantumi.ui.fragmentos.ReiniciarPartidaDialog;
 import es.upm.miw.bantumi.ui.viewmodel.BantumiViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -84,7 +85,11 @@ public class MainActivity extends AppCompatActivity {
         cronometro.start();
     }
 
-    private void stopCronometro() {
+    public void resumeCronometro(){
+        cronometro.start();
+    }
+
+    public void stopCronometro() {
         cronometro.stop();
     }
 
@@ -217,6 +222,9 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton(android.R.string.ok, null)
                         .show();
                 return true;
+            case R.id.opcReiniciarPartida:
+                new ReiniciarPartidaDialog().show(getSupportFragmentManager(),"DIALOG_REBOOT_GAME");
+                return true;
 
             // @TODO!!! resto opciones
 
@@ -272,5 +280,9 @@ public class MainActivity extends AppCompatActivity {
 
         // terminar
         new FinalAlertDialog(texto).show(getSupportFragmentManager(), "ALERT_DIALOG");
+    }
+
+    public Turno getTurnoInicial(){
+        return this.turnoInicial;
     }
 }
