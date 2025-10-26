@@ -17,6 +17,9 @@
     <!-- Mensajes elegir jugador que empieza -->
     <string name="txtStartingPlayer">¿Qué jugador debería empezar?</string>
 
+    <!-- Reiniciar partida -->
+    <string name="txtDialogoReiniciarPartida">¿Quieres reiniciar la partida?</string>
+
     <!-- Valores del juego -->
     <string name="txtInitialScore">0</string>
 
