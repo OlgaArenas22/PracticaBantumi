@@ -23,7 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.security.Guard;
+import java.io.File;
 import java.util.Locale;
 
 import es.upm.miw.bantumi.ui.fragmentos.ElegirModoDialog;
@@ -40,12 +40,25 @@ import es.upm.miw.bantumi.ui.viewmodel.BantumiViewModel;
 public class MainActivity extends AppCompatActivity {
 
     protected final String LOG_TAG = "MiW";
+    //======= VARIABLES GUARDAR PARTIDA =======
+    private static final String INDEX_FILENAME   = "index.json";
+    private static final String SAVE_FILE_PREFIX = "bantumi_save_";
+    private static final String SAVE_FILE_EXT    = ".json";
+    private static final int    MAX_SAVES        = 10;
 
-    private static final String SAVE_FILENAME = "bantumi_save.json";
+    //====== VARIABLES GUARDAR MINIATURA ======
+    private static final String THUMB_PREFIX = "bantumi_thumb_";
+    private static final String THUMB_EXT    = ".png";
+    private static final int    THUMB_SIZE       = 256;
+
+    //====== VARIABLES RUTAS MINIATURAS =======
+    private static final String SAVES_DIR   = "saves";
+    private static final String JSON_DIR    = "saves/json";
+    private static final String THUMBS_DIR  = "saves/thumbs";
+    //==========================================
     public JuegoBantumi juegoBantumi;
     private BantumiViewModel bantumiVM;
     private Turno turnoInicial;
-
     private Chronometer cronometro;
     int numInicialSemillas;
 
@@ -118,23 +131,57 @@ public class MainActivity extends AppCompatActivity {
     //endregion
 
     //region GuardarPartida
-    public void guardarPartidaEnFichero() {
+    public void guardarPartida() {
         try {
+            org.json.JSONObject index = loadSavesIndex();
+            int nextId = index.optInt("next_id", 1);
+            org.json.JSONArray saves = index.optJSONArray("saves");
+            if (saves == null) saves = new org.json.JSONArray();
+
+            if (saves.length() >= MAX_SAVES) {
+                Snackbar.make(findViewById(android.R.id.content),
+                        getString(R.string.txtLimitePartidasGuardadas),
+                        Snackbar.LENGTH_LONG).show();
+                return;
+            }
+
             String nombreJ1 = getNombreJugador1();
             String estadoModelo = juegoBantumi.serializa(nombreJ1);
             String cronoTexto = cronometro.getText().toString();
             long cronoMillis = parseMmSsToMillis(cronoTexto);
+            long ts = System.currentTimeMillis();
 
-            org.json.JSONObject obj = new org.json.JSONObject();
-            obj.put("estado", estadoModelo);
-            obj.put("jugador1", nombreJ1);
-            obj.put("cronometro_texto", cronoTexto);
-            obj.put("cronometro_millis", cronoMillis);
-            obj.put("timestamp", System.currentTimeMillis());
+            String title = "Partida guardada " + nextId;
+            String filename = SAVE_FILE_PREFIX + nextId + SAVE_FILE_EXT;
 
-            try (java.io.FileOutputStream fos = openFileOutput(SAVE_FILENAME, MODE_PRIVATE)) {
-                fos.write(obj.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
-            }
+            // 1) miniatura (devuelve ruta relativa "saves/thumbs/xxx.png")
+            String thumbPath = crearMiniaturaPartida(nextId);
+
+            // 2) JSON de la partida -> /files/saves/json/
+            org.json.JSONObject saveData = new org.json.JSONObject();
+            saveData.put("id", nextId);
+            saveData.put("title", title);
+            saveData.put("filename", filename);
+            saveData.put("timestamp", ts);
+            saveData.put("estado", estadoModelo);
+            saveData.put("jugador1", nombreJ1);
+            saveData.put("cronometro_texto", cronoTexto);
+            saveData.put("cronometro_millis", cronoMillis);
+            saveData.put("thumbnail", thumbPath);
+
+            writeWholeFileIn(JSON_DIR, filename, saveData.toString());
+
+            // 3) índice mínimo + thumb -> /files/saves/index.json
+            org.json.JSONObject meta = new org.json.JSONObject();
+            meta.put("id", nextId);
+            meta.put("title", title);
+            meta.put("filename", filename);
+            meta.put("thumb", thumbPath);
+            saves.put(meta);
+
+            index.put("saves", saves);
+            index.put("next_id", nextId + 1);
+            saveSavesIndex(index);
 
             Snackbar.make(findViewById(android.R.id.content),
                     getString(R.string.txtPartidaGuardadaOK),
@@ -147,11 +194,88 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    /** Lee o crea el índice de partidas guardadas */
+    private org.json.JSONObject loadSavesIndex() {
+        try {
+            String json = readWholeFileIn();
+            if (json != null && !json.isEmpty()) return new org.json.JSONObject(json);
+        } catch (Exception ignore) {}
+        org.json.JSONObject idx = new org.json.JSONObject();
+        try {
+            idx.put("next_id", 1);
+            idx.put("saves", new org.json.JSONArray());
+        } catch (org.json.JSONException ignore) {}
+        return idx;
+    }
+
+    private void saveSavesIndex(org.json.JSONObject index) throws java.io.IOException {
+        writeWholeFileIn(SAVES_DIR, INDEX_FILENAME, index.toString());
+    }
+
+    private File ensureDir(String relativePath) {
+        File d = new File(getFilesDir(), relativePath);
+        if (!d.exists()) d.mkdirs();
+        return d;
+    }
+
+    private void writeWholeFileIn(String relativeDir, String filename, String content) throws java.io.IOException {
+        File dir = ensureDir(relativeDir);
+        try (java.io.FileOutputStream fos = new java.io.FileOutputStream(new File(dir, filename))) {
+            fos.write(content.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        }
+    }
+
+    private String readWholeFileIn() throws java.io.IOException {
+        File f = new File(getFilesDir(), SAVES_DIR + "/" + INDEX_FILENAME);
+        try (java.io.FileInputStream fis = new java.io.FileInputStream(f);
+             java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream()) {
+            byte[] buf = new byte[4096];
+            int n;
+            while ((n = fis.read(buf)) != -1) bos.write(buf, 0, n);
+            return new String(bos.toByteArray(), java.nio.charset.StandardCharsets.UTF_8);
+        } catch (java.io.FileNotFoundException e) {
+            return null;
+        }
+    }
+    /** "mm:ss" -> milisegundos */
     private long parseMmSsToMillis(@NonNull String text) {
         String[] p = text.split(":");
         long m = Long.parseLong(p[0]);
         long s = Long.parseLong(p[1]);
         return (m * 60 + s) * 1000L;
+    }
+
+    private String crearMiniaturaPartida(int id) throws Exception {
+        View root = findViewById(R.id.main);
+        if (root.getWidth() == 0 || root.getHeight() == 0) {
+            int wSpec = View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.AT_MOST);
+            int hSpec = View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.AT_MOST);
+            root.measure(wSpec, hSpec);
+            root.layout(0, 0, root.getMeasuredWidth(), root.getMeasuredHeight());
+        }
+
+        android.graphics.Bitmap full = android.graphics.Bitmap.createBitmap(
+                root.getWidth(), root.getHeight(), android.graphics.Bitmap.Config.ARGB_8888);
+        android.graphics.Canvas canvas = new android.graphics.Canvas(full);
+        root.draw(canvas);
+
+        int side = Math.min(full.getWidth(), full.getHeight());
+        int x = (full.getWidth() - side) / 2;
+        int y = (full.getHeight() - side) / 2;
+        android.graphics.Bitmap square = android.graphics.Bitmap.createBitmap(full, x, y, side, side);
+
+        android.graphics.Bitmap thumb = android.graphics.Bitmap.createScaledBitmap(square, THUMB_SIZE, THUMB_SIZE, true);
+
+        File dir = ensureDir(THUMBS_DIR);
+        String filename = THUMB_PREFIX + id + THUMB_EXT;
+        try (java.io.FileOutputStream fos = new java.io.FileOutputStream(new File(dir, filename))) {
+            thumb.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, fos);
+        }
+
+        full.recycle();
+        square.recycle();
+        return THUMBS_DIR + "/" + filename;
     }
     //endregion
 

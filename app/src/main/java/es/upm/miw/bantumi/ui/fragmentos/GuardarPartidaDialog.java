@@ -36,7 +36,7 @@ public class GuardarPartidaDialog extends DialogFragment {
 
         btnGuardar.setOnClickListener(v->{
             if(getActivity() instanceof MainActivity){
-                main.guardarPartidaEnFichero();
+                main.guardarPartida();
                 main.resumeCronometro();
             }
             dialog.dismiss();
