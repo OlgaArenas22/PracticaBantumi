@@ -203,9 +203,17 @@ public class JuegoBantumi {
      *
      * @return juego serializado
      */
-    public String serializa() {
-        // @TODO
-        return null;
+    public String serializa(String nombreJ1) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(nombreJ1 == null ? "" : nombreJ1.replace(";", ","))
+                .append(';')
+                .append(turnoActual().name())
+                .append(';');
+        for (int i = 0; i < NUM_POSICIONES; i++) {
+            if (i > 0) sb.append(',');
+            sb.append(getSemillas(i));
+        }
+        return sb.toString();
     }
 
     /**

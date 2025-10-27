@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.security.Guard;
 import java.util.Locale;
 
 import es.upm.miw.bantumi.ui.fragmentos.ElegirModoDialog;
@@ -32,12 +33,15 @@ import es.upm.miw.bantumi.ui.fragmentos.FinalAlertDialog;
 import es.upm.miw.bantumi.R;
 import es.upm.miw.bantumi.dominio.logica.JuegoBantumi;
 import es.upm.miw.bantumi.dominio.logica.JuegoBantumi.Turno;
+import es.upm.miw.bantumi.ui.fragmentos.GuardarPartidaDialog;
 import es.upm.miw.bantumi.ui.fragmentos.ReiniciarPartidaDialog;
 import es.upm.miw.bantumi.ui.viewmodel.BantumiViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
     protected final String LOG_TAG = "MiW";
+
+    private static final String SAVE_FILENAME = "bantumi_save.json";
     public JuegoBantumi juegoBantumi;
     private BantumiViewModel bantumiVM;
     private Turno turnoInicial;
@@ -80,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         new ElegirNombreDialog().show(getSupportFragmentManager(), "DIALOG_NOMBRE");
     }
 
+    //region Cronómetro
     public void startCronometro() {
         cronometro.setBase(SystemClock.elapsedRealtime());
         cronometro.start();
@@ -97,6 +102,10 @@ public class MainActivity extends AppCompatActivity {
         cronometro.stop();
         cronometro.setBase(SystemClock.elapsedRealtime());
     }
+
+    //endregion
+
+    //region ElegirModoJuego
     public void onMostrarElegirModo() {
         new ElegirModoDialog().show(getSupportFragmentManager(), "DIALOG_MODO");
     }
@@ -106,14 +115,49 @@ public class MainActivity extends AppCompatActivity {
         onMostrarElegirTurno();
     }
 
+    //endregion
+
+    //region GuardarPartida
+    public void guardarPartidaEnFichero() {
+        try {
+            String nombreJ1 = getNombreJugador1();
+            String estadoModelo = juegoBantumi.serializa(nombreJ1);
+            String cronoTexto = cronometro.getText().toString();
+            long cronoMillis = parseMmSsToMillis(cronoTexto);
+
+            org.json.JSONObject obj = new org.json.JSONObject();
+            obj.put("estado", estadoModelo);
+            obj.put("jugador1", nombreJ1);
+            obj.put("cronometro_texto", cronoTexto);
+            obj.put("cronometro_millis", cronoMillis);
+            obj.put("timestamp", System.currentTimeMillis());
+
+            try (java.io.FileOutputStream fos = openFileOutput(SAVE_FILENAME, MODE_PRIVATE)) {
+                fos.write(obj.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            }
+
+            Snackbar.make(findViewById(android.R.id.content),
+                    getString(R.string.txtPartidaGuardadaOK),
+                    Snackbar.LENGTH_LONG).show();
+
+        } catch (Exception e) {
+            Snackbar.make(findViewById(android.R.id.content),
+                    getString(R.string.txtPartidaGuardadaERROR),
+                    Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private long parseMmSsToMillis(@NonNull String text) {
+        String[] p = text.split(":");
+        long m = Long.parseLong(p[0]);
+        long s = Long.parseLong(p[1]);
+        return (m * 60 + s) * 1000L;
+    }
+    //endregion
+
     public void onMostrarElegirTurno() {
         new ElegirTurnoDialog(getNombreJugador1())
                 .show(getSupportFragmentManager(), "DIALOG_TURNO");
-    }
-
-    private String getNombreJugador1() {
-        TextView tvJugador1 = findViewById(R.id.tvPlayer1);
-        return tvJugador1.getText().toString();
     }
 
     /**
@@ -197,6 +241,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //region Menú
+
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.opciones_menu, menu);
@@ -215,15 +261,18 @@ public class MainActivity extends AppCompatActivity {
 //            case R.id.opcAjustes: // @todo Preferencias
 //                startActivity(new Intent(this, BantumiPrefs.class));
 //                return true;
+            case R.id.opcReiniciarPartida:
+                new ReiniciarPartidaDialog().show(getSupportFragmentManager(),"DIALOG_REBOOT_GAME");
+                return true;
+            case R.id.opcGuardarPartida:
+                new GuardarPartidaDialog().show(getSupportFragmentManager(), "DIALOG_SAVE_GAME");
+                return true;
             case R.id.opcAcercaDe:
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.aboutTitle)
                         .setMessage(R.string.aboutMessage)
                         .setPositiveButton(android.R.string.ok, null)
                         .show();
-                return true;
-            case R.id.opcReiniciarPartida:
-                new ReiniciarPartidaDialog().show(getSupportFragmentManager(),"DIALOG_REBOOT_GAME");
                 return true;
 
             // @TODO!!! resto opciones
@@ -238,6 +287,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //endregion
     /**
      * Acción que se ejecuta al pulsar sobre cualquier hueco
      *
@@ -284,5 +334,10 @@ public class MainActivity extends AppCompatActivity {
 
     public Turno getTurnoInicial(){
         return this.turnoInicial;
+    }
+
+    private String getNombreJugador1() {
+        TextView tvJugador1 = findViewById(R.id.tvPlayer1);
+        return tvJugador1.getText().toString();
     }
 }
