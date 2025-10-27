@@ -222,6 +222,35 @@ public class JuegoBantumi {
      * @param juegoSerializado cadena que representa el estado completo del juego
      */
     public void deserializa(String juegoSerializado) {
-        // @TODO
+        if (juegoSerializado == null || juegoSerializado.isEmpty()) {
+            Log.w("MiW", "deserializa(): cadena nula o vacía, se ignora");
+            return;
+        }
+        try {
+            String[] parts = juegoSerializado.split(";");
+            if (parts.length != 3) {
+                Log.e("MiW", "deserializa(): formato inválido, partes=" + parts.length);
+                return;
+            }
+            // parts[0] = nombreJ1 (lo gestiona la UI)
+            Turno turno = Turno.valueOf(parts[1].trim());
+
+            String[] semillas = parts[2].split(",");
+            if (semillas.length != NUM_POSICIONES) {
+                Log.e("MiW", "deserializa(): nº posiciones inválido=" + semillas.length);
+                return;
+            }
+            for (int i = 0; i < NUM_POSICIONES; i++) {
+                int v = Integer.parseInt(semillas[i].trim());
+                if (v < 0) v = 0;
+                setSemillas(i, v);
+            }
+            setTurno(turno);
+            Log.i("MiW", "deserializa(): estado restaurado OK, turno=" + turno);
+
+        } catch (Exception e) {
+            Log.e("MiW", "deserializa(): error restaurando estado: " + e.getMessage(), e);
+        }
     }
+
 }

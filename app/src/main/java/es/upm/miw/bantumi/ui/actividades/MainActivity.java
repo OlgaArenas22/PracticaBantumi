@@ -1,8 +1,11 @@
 package es.upm.miw.bantumi.ui.actividades;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -24,7 +27,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.File;
 import java.util.Locale;
 
 import es.upm.miw.bantumi.ui.fragmentos.ElegirModoDialog;
@@ -36,6 +38,7 @@ import es.upm.miw.bantumi.dominio.logica.JuegoBantumi;
 import es.upm.miw.bantumi.dominio.logica.JuegoBantumi.Turno;
 import es.upm.miw.bantumi.ui.fragmentos.GuardarPartidaDialog;
 import es.upm.miw.bantumi.ui.fragmentos.ReiniciarPartidaDialog;
+import es.upm.miw.bantumi.ui.managers.CargarPartidaManager;
 import es.upm.miw.bantumi.ui.managers.GuardarPartidaManager;
 import es.upm.miw.bantumi.ui.managers.MiniaturaManager;
 import es.upm.miw.bantumi.ui.viewmodel.BantumiViewModel;
@@ -43,6 +46,20 @@ import es.upm.miw.bantumi.ui.viewmodel.BantumiViewModel;
 public class MainActivity extends AppCompatActivity {
 
     protected final String LOG_TAG = "MiW";
+    private final ActivityResultLauncher<Intent> cargarPartidaLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            String filename = result.getData().getStringExtra(CargarPartidaActivity.EXTRA_SELECTED_FILENAME);
+                            if (filename != null) {
+                                cargarPartida(filename);
+                                return;
+                            }
+                        }
+                        resumeCronometro();
+                    }
+            );
     public JuegoBantumi juegoBantumi;
     private BantumiViewModel bantumiVM;
     private Turno turnoInicial;
@@ -153,6 +170,42 @@ public class MainActivity extends AppCompatActivity {
     return (m * 60 + s) * 1000L;
     }
     //endregion
+
+    private void cargarPartida(String filename) {
+        // 1) Leer JSON completo de la partida
+        CargarPartidaManager cargarMgr = new CargarPartidaManager(getApplicationContext());
+        org.json.JSONObject save = cargarMgr.readSave(filename);
+        if (save == null) {
+            com.google.android.material.snackbar.Snackbar.make(findViewById(android.R.id.content),
+                    getString(R.string.txtPartidaGuardadaERROR),
+                    com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show();
+            resumeCronometro();
+            return;
+        }
+        try {
+            // 2) Estado del juego (modelo) -> delega en tu propio motor
+            String estado = save.getString("estado");
+            juegoBantumi.deserializa(estado);
+
+            // 3) Nombre del jugador 1 (UI)
+            String nombreJ1 = save.optString("jugador1", "");
+            ((android.widget.TextView) findViewById(R.id.tvPlayer1)).setText(nombreJ1);
+
+            // 4) Cronómetro
+            long cronoMillis = save.optLong("cronometro_millis", 0L);
+            cronometro.stop();
+            cronometro.setBase(android.os.SystemClock.elapsedRealtime() - cronoMillis);
+            cronometro.start();
+
+        } catch (Exception e) {
+            com.google.android.material.snackbar.Snackbar.make(findViewById(android.R.id.content),
+                    getString(R.string.txtPartidaGuardadaERROR),
+                    com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show();
+            resumeCronometro();
+        }
+    }
+
+
 
     public void onMostrarElegirTurno() {
         new ElegirTurnoDialog(getNombreJugador1())
@@ -265,6 +318,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.opcGuardarPartida:
                 new GuardarPartidaDialog().show(getSupportFragmentManager(), "DIALOG_SAVE_GAME");
+                return true;
+            case R.id.opcCargarPartida:
+                stopCronometro();
+                Intent i = new Intent(this, CargarPartidaActivity.class);;
+                cargarPartidaLauncher.launch(i);
                 return true;
             case R.id.opcAcercaDe:
                 new AlertDialog.Builder(this)

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/saves_games_bar"
+    android:outlineAmbientShadowColor="@color/saves_games_bar"
+    android:id="@+id/cargarPartida">
+
+    <TextView
+        android:id="@+id/tvPartidasGuardadas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtPartidasGuardadas"
+        android:fontFamily="@font/super_comic"
+        android:textColor="@android:color/white"
+        android:layout_centerHorizontal="true"
+        android:textSize="18sp"
+        android:padding="16dp"/>
+
+    <ImageButton
+        android:id="@+id/btnCerrar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="12dp"
+        android:background="@android:color/holo_red_dark"
+        android:contentDescription="Cerrar"
+        android:scaleType="centerInside"
+        android:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+    <!-- Grid 3 columnas -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_saves"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tvPartidasGuardadas"
+        android:background="@color/saves_games_background"
+        android:padding="8dp" />
+
+</RelativeLayout>
