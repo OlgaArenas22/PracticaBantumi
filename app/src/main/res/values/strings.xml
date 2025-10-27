@@ -9,6 +9,7 @@
     <string name="btnConfirmar">Confirmar</string>
     <string name="btnAceptar">Aceptar</string>
     <string name="btnCancelar">Cancelar</string>
+    <string name="btnGuardar">Guardar</string>
 
     <!-- Cambiar nombre jugador-->
     <string name="hintPlayer1Name">Jugador 1</string>
@@ -18,7 +19,13 @@
     <string name="txtStartingPlayer">¿Qué jugador debería empezar?</string>
 
     <!-- Reiniciar partida -->
-    <string name="txtDialogoReiniciarPartida">¿Quieres reiniciar la partida?</string>
+    <string name="txtDialogoReiniciarPartida">¿Quiere reiniciar la partida?</string>
+
+    <!-- Guardar partida -->
+    <string name="txtDialogoGuardarPartida">¿Quiere guardar la partida?</string>
+    <string name="txtPartidaGuardadaOK">La partida ha sido guardada correctamente</string>
+    <string name="txtPartidaGuardadaERROR">No se ha podido guardar la partida</string>
+    <string name="txtLimitePartidasGuardadas">Se ha alcanzado el límite de partidas guardadas</string>
 
     <!-- Valores del juego -->
     <string name="txtInitialScore">0</string>
