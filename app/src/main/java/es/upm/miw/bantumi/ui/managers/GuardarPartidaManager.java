@@ -44,7 +44,8 @@ public class GuardarPartidaManager {
             String nombreJ1,
             String cronoTexto,
             long cronoMillis,
-            Bitmap thumbnail
+            Bitmap thumbnail,
+            int numIniSeeds
     ) {
         try {
             JSONObject index = loadIndex();
@@ -75,6 +76,7 @@ public class GuardarPartidaManager {
             saveData.put("cronometro_texto", cronoTexto);
             saveData.put("cronometro_millis", cronoMillis);
             saveData.put("thumbnail", thumbRelPath);
+            saveData.put("seeds", numIniSeeds);
 
             writeWholeFileIn(JSON_DIR, jsonFilename, saveData.toString());
 

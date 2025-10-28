@@ -26,13 +26,15 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Locale;
 
+import es.upm.miw.bantumi.data.database.entities.ResultEntity;
+import es.upm.miw.bantumi.data.network.ResultRepository;
 import es.upm.miw.bantumi.ui.fragmentos.ElegirModoDialog;
 import es.upm.miw.bantumi.ui.fragmentos.ElegirNombreDialog;
 import es.upm.miw.bantumi.ui.fragmentos.ElegirTurnoDialog;
-import es.upm.miw.bantumi.ui.fragmentos.FinalAlertDialog;
 import es.upm.miw.bantumi.R;
 import es.upm.miw.bantumi.dominio.logica.JuegoBantumi;
 import es.upm.miw.bantumi.dominio.logica.JuegoBantumi.Turno;
+import es.upm.miw.bantumi.ui.fragmentos.FinPartidaDialog;
 import es.upm.miw.bantumi.ui.fragmentos.GuardarPartidaDialog;
 import es.upm.miw.bantumi.ui.fragmentos.ReiniciarPartidaDialog;
 import es.upm.miw.bantumi.ui.managers.CargarPartidaManager;
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             View root = findViewById(R.id.main);
             Bitmap thumb = miniaturaMgr.crearMiniaturaCuadrada(root, GuardarPartidaManager.THUMB_SIZE);
 
-            GuardarPartidaManager.SaveResult result = guardarMgr.guardarNuevaPartida(estado, nombreJ1, cronoTexto, cronoMillis, thumb);
+            GuardarPartidaManager.SaveResult result = guardarMgr.guardarNuevaPartida(estado, nombreJ1, cronoTexto, cronoMillis, thumb, juegoBantumi.getNumInicialSemillas());
 
             Snackbar.make(findViewById(android.R.id.content),
                     result.ok ? getString(R.string.txtPartidaGuardadaOK)
@@ -201,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
             cronometro.stop();
             cronometro.setBase(android.os.SystemClock.elapsedRealtime() - cronoMillis);
             cronometro.start();
+            juegoBantumi.setNumInicialSemillas(save.optInt("seeds", -1));
 
         } catch (Exception e) {
             com.google.android.material.snackbar.Snackbar.make(findViewById(android.R.id.content),
@@ -383,19 +386,66 @@ public class MainActivity extends AppCompatActivity {
      * El juego ha terminado. Volver a jugar?
      */
     private void finJuego() {
+        // 1) Pausar cronómetro
         stopCronometro();
-        String texto = (juegoBantumi.getSemillas(6) > 6 * numInicialSemillas)
-                ? "Gana Jugador 1"
-                : "Gana Jugador 2";
-        if (juegoBantumi.getSemillas(6) == 6 * numInicialSemillas) {
-            texto = "¡¡¡ EMPATE !!!";
+        long elapsedMillis = android.os.SystemClock.elapsedRealtime() - cronometro.getBase();
+
+        int seedsPlayer1 = juegoBantumi.getSemillas(6);
+        int seedsPlayer2 = juegoBantumi.getSemillas(13);
+        // 2) Datos de nombres
+        String player1Name = getNombreJugador1();
+        String winnerName;
+        boolean player1Won = seedsPlayer1 > seedsPlayer2;
+        if (seedsPlayer1 == seedsPlayer2) {
+            player1Won = false;
+            winnerName = getString(R.string.txtEmpate);
+        } else {
+            winnerName = player1Won ? player1Name : getString(R.string.txtPlayer2);
         }
 
-        // @TODO guardar puntuación
+        // 3) Modo por minSeeds
+        String mode = mapMode();
 
-        // terminar
-        new FinalAlertDialog(texto).show(getSupportFragmentManager(), "ALERT_DIALOG");
+        // 4) Guardar en Room (en background)
+        ResultRepository repo =
+                new ResultRepository(getApplicationContext());
+
+        ResultEntity entity =
+                new ResultEntity(
+                        winnerName,
+                        player1Name,
+                        seedsPlayer1,
+                        seedsPlayer2,
+                        elapsedMillis,
+                        mode,
+                        System.currentTimeMillis(),
+                        player1Won
+                );
+        repo.insertAsync(entity);
+
+        // 5) Formato texto del tiempo para el diálogo (mm:ss o hh:mm:ss)
+        String elapsedText = formatElapsed(elapsedMillis);
+
+        // 6) Mostrar diálogo fin de partida
+        new FinPartidaDialog(player1Name,player1Won).show(getSupportFragmentManager(), "FIN_PARTIDA_DIALOG");
     }
+
+    private String mapMode() {
+        int minSeeds = juegoBantumi.getNumInicialSemillas();
+        return (minSeeds == 2) ? getString(R.string.txtRapido)
+                : (minSeeds == 8) ? getString(R.string.txtFiebre)
+                : getString(R.string.txtClasico);
+    }
+
+    private String formatElapsed(long ms) {
+        long totalSec = ms / 1000;
+        long h = totalSec / 3600;
+        long m = (totalSec % 3600) / 60;
+        long s = totalSec % 60;
+        if (h > 0) return String.format(java.util.Locale.getDefault(), "%d:%02d:%02d", h, m, s);
+        return String.format(java.util.Locale.getDefault(), "%02d:%02d", m, s);
+    }
+
 
     public Turno getTurnoInicial(){
         return this.turnoInicial;

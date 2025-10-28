@@ -1,0 +1,20 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- corona izquierda -->
+    <path
+        android:fillColor="#2E1852"
+        android:pathData="M3,7l4,4l2,-5l3,4l0,6H5z"/>
+    <!-- corona derecha -->
+    <path
+        android:fillColor="#2E1852"
+        android:pathData="M21,7l-4,4l-2,-5l-3,4l0,6h7z"/>
+    <!-- “fractura” central -->
+    <path
+        android:fillColor="#1A0D2E"
+        android:pathData="M12,6l-1,2l2,2l-2,2l2,2l-1,2"
+        android:strokeColor="#1A0D2E"
+        android:strokeWidth="0.5"/>
+</vector>

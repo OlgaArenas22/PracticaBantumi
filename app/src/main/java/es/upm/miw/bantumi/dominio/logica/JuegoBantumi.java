@@ -20,7 +20,7 @@ public class JuegoBantumi {
     }
 
     // Número inicial de semillas
-    private final int numInicialSemillas;
+    private int numInicialSemillas;
 
     /**
      * <b>Constructor</b><br>
@@ -253,4 +253,11 @@ public class JuegoBantumi {
         }
     }
 
+    public int getNumInicialSemillas() {
+        return numInicialSemillas;
+    }
+
+    public void setNumInicialSemillas(int numInicialSemillas){
+        this.numInicialSemillas = numInicialSemillas;
+    }
 }
