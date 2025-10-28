@@ -1,11 +1,8 @@
 package es.upm.miw.bantumi.ui.actividades;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -42,26 +39,14 @@ import es.upm.miw.bantumi.ui.managers.CargarPartidaManager;
 import es.upm.miw.bantumi.ui.managers.GuardarPartidaManager;
 import es.upm.miw.bantumi.ui.managers.MiniaturaManager;
 import es.upm.miw.bantumi.ui.viewmodel.BantumiViewModel;
+import es.upm.miw.bantumi.ui.viewmodel.CargarPartidaViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
     protected final String LOG_TAG = "MiW";
-    private final ActivityResultLauncher<Intent> cargarPartidaLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.StartActivityForResult(),
-                    result -> {
-                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                            String filename = result.getData().getStringExtra(CargarPartidaActivity.EXTRA_SELECTED_FILENAME);
-                            if (filename != null) {
-                                cargarPartida(filename);
-                                return;
-                            }
-                        }
-                        resumeCronometro();
-                    }
-            );
     public JuegoBantumi juegoBantumi;
     private BantumiViewModel bantumiVM;
+    private CargarPartidaViewModel cargarVM;
     private Turno turnoInicial;
     private Chronometer cronometro;
     int numInicialSemillas;
@@ -100,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
         resetCronometro();
         guardarMgr = new GuardarPartidaManager(getApplicationContext());
         miniaturaMgr = new MiniaturaManager();
+        cargarVM = new ViewModelProvider(this).get(CargarPartidaViewModel.class);
+        observarEventosCargarPartida();
 
         //Permite cambiar el nombre del jugador al empezar el juego
         new ElegirNombreDialog().show(getSupportFragmentManager(), "DIALOG_NOMBRE");
@@ -171,6 +158,24 @@ public class MainActivity extends AppCompatActivity {
     }
     //endregion
 
+    //region CargarPartida
+    private void observarEventosCargarPartida() {
+        // Confirmación: cargar la partida y cerrar fragment
+        cargarVM.selectedFilename.observe(this, filename -> {
+            if (filename == null) return;
+            cargarPartida(filename);
+            getSupportFragmentManager().popBackStack(); // cerrar fragment
+            cargarVM.clearEvents();
+        });
+
+        // Cancelación: reanuda cronómetro y cerrar fragment
+        cargarVM.cancel.observe(this, cancel -> {
+            if (cancel == null || !cancel) return;
+            resumeCronometro();
+            getSupportFragmentManager().popBackStack();
+            cargarVM.clearEvents();
+        });
+    }
     private void cargarPartida(String filename) {
         // 1) Leer JSON completo de la partida
         CargarPartidaManager cargarMgr = new CargarPartidaManager(getApplicationContext());
@@ -204,8 +209,7 @@ public class MainActivity extends AppCompatActivity {
             resumeCronometro();
         }
     }
-
-
+//endregion
 
     public void onMostrarElegirTurno() {
         new ElegirTurnoDialog(getNombreJugador1())
@@ -321,8 +325,12 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.opcCargarPartida:
                 stopCronometro();
-                Intent i = new Intent(this, CargarPartidaActivity.class);;
-                cargarPartidaLauncher.launch(i);
+                getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                                android.R.anim.fade_in, android.R.anim.fade_out)
+                        .replace(R.id.main, new es.upm.miw.bantumi.ui.fragmentos.CargarPartidaFragment())
+                        .addToBackStack("cargar_partida")
+                        .commit();
                 return true;
             case R.id.opcAcercaDe:
                 new AlertDialog.Builder(this)
