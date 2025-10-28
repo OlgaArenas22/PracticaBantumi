@@ -1,0 +1,88 @@
+package es.upm.miw.bantumi.ui.adapters;
+
+import android.graphics.Bitmap;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
+import es.upm.miw.bantumi.R;
+
+public class CargarPartidaAdapter extends RecyclerView.Adapter<CargarPartidaAdapter.VH> {
+
+    public interface OnSaveClick { void onSaveClicked(String filename); }
+
+    public static class Item {
+        public final String title;
+        public final Bitmap thumb;
+        public final String filename;
+
+        public Item(String title, Bitmap thumb, String filename) {
+            this.title = title; this.thumb = thumb; this.filename = filename;
+        }
+        public static Item placeholder() { return new Item("", null, null); }
+        public boolean isPlaceholder() { return filename == null; }
+    }
+
+    private final List<Item> data;
+    private final OnSaveClick listener;
+
+    public CargarPartidaAdapter(List<Item> data, OnSaveClick listener) {
+        this.data = data; this.listener = listener;
+    }
+
+    @NonNull
+    @Override
+    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_save_slot, parent, false);
+        return new VH(v);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull VH h, int position) {
+        Item it = data.get(position);
+
+        if (it.isPlaceholder()) {
+            h.title.setText("Vacío");
+            h.btnThumb.setImageResource(R.drawable.icon_bantumi);
+            h.btnThumb.setEnabled(false);
+            h.btnThumb.setOnClickListener(null);
+        } else {
+            h.title.setText(it.title);
+            if (it.thumb != null) {
+                h.btnThumb.setImageBitmap(it.thumb);
+            } else {
+                h.btnThumb.setImageResource(R.drawable.icon_bantumi);
+            }
+            h.btnThumb.setEnabled(true);
+            h.btnThumb.setOnClickListener(v -> {
+                if (listener != null) listener.onSaveClicked(it.filename);
+            });
+        }
+    }
+
+    @Override
+    public int getItemCount() { return data.size(); }
+
+    static class VH extends RecyclerView.ViewHolder {
+        ImageButton btnThumb;
+        TextView title;
+        ImageView hiddenImg;
+
+        VH(@NonNull View v) {
+            super(v);
+            btnThumb = v.findViewById(R.id.btn_thumb);
+            title = v.findViewById(R.id.tv_title);
+            hiddenImg = v.findViewById(R.id.img_thumb);
+        }
+    }
+}
