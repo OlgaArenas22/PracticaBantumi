@@ -27,6 +27,9 @@ import es.upm.miw.bantumi.ui.viewmodel.CargarPartidaViewModel;
 public class CargarPartidaFragment extends Fragment implements CargarPartidaAdapter.OnSaveClick {
 
     private CargarPartidaViewModel vm;
+    private CargarPartidaManager cargarMgr;
+    private CargarPartidaAdapter adapter;
+    private RecyclerView rv;
 
     public CargarPartidaFragment() {}
 
@@ -40,14 +43,45 @@ public class CargarPartidaFragment extends Fragment implements CargarPartidaAdap
     public void onViewCreated(@NonNull View v, @Nullable Bundle s) {
         vm = new ViewModelProvider(requireActivity()).get(CargarPartidaViewModel.class);
         super.onViewCreated(v, s);
-        CargarPartidaManager cargarMgr = new CargarPartidaManager(requireContext().getApplicationContext());
+        cargarMgr = new CargarPartidaManager(requireContext().getApplicationContext());
 
         ImageButton btnCerrar = v.findViewById(R.id.btnCerrar);
         btnCerrar.setOnClickListener(view -> vm.requestCancel());
 
-        RecyclerView rv = v.findViewById(R.id.recycler_saves);
+        rv = v.findViewById(R.id.recycler_saves);
         rv.setLayoutManager(new GridLayoutManager(requireContext(), 3));
 
+        // === LO QUE YA TENÍAS: construir items y setear adapter ===
+        adapter = new CargarPartidaAdapter(buildItems(), this);
+
+        // === NUEVO: callback de papelera para abrir tu diálogo personalizado ===
+        adapter.setOnDeleteClick(filename -> {
+            if (filename == null || filename.isEmpty()) return;
+            new EliminarPartidaDialog(filename)
+                    .show(requireActivity().getSupportFragmentManager(), "CONFIRM_DELETE_GAME");
+        });
+
+        rv.setAdapter(adapter);
+
+        // === NUEVO: observar confirmación de borrado y refrescar ===
+        vm.deleteConfirmed.observe(getViewLifecycleOwner(), filename -> {
+            if (filename == null || filename.isEmpty()) return;
+            boolean ok = cargarMgr.deleteSave(filename);
+            if (ok) {
+                // reconstruimos items (desplaza hacia delante, sin renumerar IDs) y reasignamos adapter
+                adapter = new CargarPartidaAdapter(buildItems(), this);
+                adapter.setOnDeleteClick(f -> {
+                    if (f == null || f.isEmpty()) return;
+                    new EliminarPartidaDialog(f)
+                            .show(requireActivity().getSupportFragmentManager(), "CONFIRM_DELETE_GAME");
+                });
+                rv.setAdapter(adapter);
+            }
+            vm.clearEvents();
+        });
+    }
+
+    private List<CargarPartidaAdapter.Item> buildItems() {
         List<SaveMeta> metas = cargarMgr.listSaves();
         List<CargarPartidaAdapter.Item> items = new ArrayList<>();
         for (SaveMeta m : metas) {
@@ -61,7 +95,7 @@ public class CargarPartidaFragment extends Fragment implements CargarPartidaAdap
         for (int i = items.size(); i < CargarPartidaManager.MAX_SAVES; i++) {
             items.add(CargarPartidaAdapter.Item.placeholder());
         }
-        rv.setAdapter(new CargarPartidaAdapter(items, this));
+        return items;
     }
 
     @Override

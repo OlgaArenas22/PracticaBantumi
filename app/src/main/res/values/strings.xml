@@ -32,6 +32,9 @@
     <string name="txtAdvertencia">¿Está seguro?</string>
     <string name="txtCargarPartida">Si carga esta partida el progreso actual se perderá.</string>
 
+    <!-- Eliminar partida -->
+    <string name="txtEliminarPartida">Si elimina esta partida no podrá recuperarla más adelante</string>
+
     <!-- Valores del juego -->
     <string name="txtInitialScore">0</string>
 
