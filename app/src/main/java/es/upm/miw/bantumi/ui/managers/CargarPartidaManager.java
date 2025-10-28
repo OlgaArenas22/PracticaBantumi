@@ -67,6 +67,67 @@ public class CargarPartidaManager {
         }
     }
 
+
+    //region Borrar partida
+    public boolean deleteSave(String filename) {
+        try {
+            JSONObject idx = loadIndex();
+            JSONArray saves = idx.optJSONArray("saves");
+            if (saves == null) return false;
+
+            JSONArray newSaves = new JSONArray();
+            String thumbRel = null;
+
+            for (int i = 0; i < saves.length(); i++) {
+                JSONObject o = saves.optJSONObject(i);
+                if (o == null) continue;
+                String fn = o.optString("filename", "");
+                if (filename.equals(fn)) {
+                    thumbRel = o.optString("thumb", null); // p.ej: "saves/thumbs/thumb_3.png" o "thumbs/thumb_3.png"
+                    // no lo añadimos -> eliminado
+                } else {
+                    newSaves.put(o);
+                }
+            }
+
+            // Mantener next_id tal cual
+            idx.put("saves", newSaves);
+            writeIndex(idx);
+
+            // Borrar JSON de la partida
+            deleteFileIn(JSON_DIR, filename);
+
+            // Borrar miniatura (thumbRelativePath se guarda respecto a filesDir; usamos tal cual)
+            if (thumbRel != null && !thumbRel.isEmpty()) {
+                File thumbFile = new File(appContext.getFilesDir(), thumbRel);
+                if (thumbFile.exists()) thumbFile.delete();
+            }
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void writeIndex(JSONObject idx) throws Exception {
+        writeFileIn(SAVES_DIR, INDEX_FILE, idx.toString());
+    }
+
+    private void writeFileIn(String relativeDir, String filename, String contents) throws Exception {
+        File dir = new File(appContext.getFilesDir(), relativeDir);
+        if (!dir.exists()) dir.mkdirs();
+        File f = new File(dir, filename);
+        try (java.io.FileOutputStream fos = new java.io.FileOutputStream(f)) {
+            fos.write(contents.getBytes(StandardCharsets.UTF_8));
+            fos.flush();
+        }
+    }
+
+    private void deleteFileIn(String relativeDir, String filename) {
+        File f = new File(appContext.getFilesDir(), relativeDir + "/" + filename);
+        if (f.exists()) f.delete();
+    }
+    //endregion
     private JSONObject loadIndex() {
         try {
             String json = readWholeFileIn(SAVES_DIR, INDEX_FILE);

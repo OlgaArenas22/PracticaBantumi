@@ -19,6 +19,7 @@ import es.upm.miw.bantumi.R;
 public class CargarPartidaAdapter extends RecyclerView.Adapter<CargarPartidaAdapter.VH> {
 
     public interface OnSaveClick { void onSaveClicked(String filename); }
+    public interface OnDeleteClick { void onDeleteClicked(String filename); }
 
     public static class Item {
         public final String title;
@@ -34,9 +35,14 @@ public class CargarPartidaAdapter extends RecyclerView.Adapter<CargarPartidaAdap
 
     private final List<Item> data;
     private final OnSaveClick listener;
+    private OnDeleteClick deleteListener;
 
     public CargarPartidaAdapter(List<Item> data, OnSaveClick listener) {
         this.data = data; this.listener = listener;
+    }
+
+    public void setOnDeleteClick(OnDeleteClick deleteListener) {
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -56,6 +62,8 @@ public class CargarPartidaAdapter extends RecyclerView.Adapter<CargarPartidaAdap
             h.btnThumb.setImageResource(R.drawable.empty_slot);
             h.btnThumb.setEnabled(false);
             h.btnThumb.setOnClickListener(null);
+            h.btnDelete.setVisibility(View.INVISIBLE); //
+            h.btnDelete.setOnClickListener(null);
         } else {
             h.title.setText(it.title);
             if (it.thumb != null) {
@@ -67,6 +75,10 @@ public class CargarPartidaAdapter extends RecyclerView.Adapter<CargarPartidaAdap
             h.btnThumb.setOnClickListener(v -> {
                 if (listener != null) listener.onSaveClicked(it.filename);
             });
+            h.btnDelete.setVisibility(View.VISIBLE);
+            h.btnDelete.setOnClickListener(v -> {
+                if (deleteListener != null) deleteListener.onDeleteClicked(it.filename);
+            });
         }
     }
 
@@ -76,11 +88,13 @@ public class CargarPartidaAdapter extends RecyclerView.Adapter<CargarPartidaAdap
     static class VH extends RecyclerView.ViewHolder {
         ImageButton btnThumb;
         TextView title;
+        ImageButton btnDelete;
         ImageView hiddenImg;
 
         VH(@NonNull View v) {
             super(v);
             btnThumb = v.findViewById(R.id.btn_thumb);
+            btnDelete = v.findViewById(R.id.btn_delete);
             title = v.findViewById(R.id.tv_title);
             hiddenImg = v.findViewById(R.id.img_thumb);
         }
