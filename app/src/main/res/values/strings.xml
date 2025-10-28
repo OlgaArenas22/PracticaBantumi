@@ -11,6 +11,7 @@
     <string name="btnCancelar">Cancelar</string>
     <string name="btnGuardar">Guardar</string>
     <string name="btnCerrar">Cerrar</string>
+    <string name="btnSalir">Salir</string>
 
     <!-- Cambiar nombre jugador-->
     <string name="hintPlayer1Name">Jugador 1</string>
@@ -83,6 +84,9 @@
 
     <!-- Diálogo Final -->
     <string name="txtDialogoFinalTitulo">Fin del juego</string>
-    <string name="txtDialogoFinalPregunta">¿Desea jugar otra partida?</string>
+    <string name="txtDialogoFinalVolver">Volver a jugar</string>
+    <string name="txtGanador">¡Has ganado!</string>>
+    <string name="txtPerdedor">Has perdido :(</string>
+    <string name="txtEmpate">Empate</string>
 
 </resources>
