@@ -10,6 +10,7 @@
     <string name="btnAceptar">Aceptar</string>
     <string name="btnCancelar">Cancelar</string>
     <string name="btnGuardar">Guardar</string>
+    <string name="btnCerrar">Cerrar</string>
 
     <!-- Cambiar nombre jugador-->
     <string name="hintPlayer1Name">Jugador 1</string>
