@@ -53,7 +53,7 @@ public class CargarPartidaAdapter extends RecyclerView.Adapter<CargarPartidaAdap
 
         if (it.isPlaceholder()) {
             h.title.setText("Vacío");
-            h.btnThumb.setImageResource(R.drawable.icon_bantumi);
+            h.btnThumb.setImageResource(R.drawable.empty_slot);
             h.btnThumb.setEnabled(false);
             h.btnThumb.setOnClickListener(null);
         } else {
@@ -61,7 +61,7 @@ public class CargarPartidaAdapter extends RecyclerView.Adapter<CargarPartidaAdap
             if (it.thumb != null) {
                 h.btnThumb.setImageBitmap(it.thumb);
             } else {
-                h.btnThumb.setImageResource(R.drawable.icon_bantumi);
+                h.btnThumb.setImageResource(R.drawable.empty_slot);
             }
             h.btnThumb.setEnabled(true);
             h.btnThumb.setOnClickListener(v -> {

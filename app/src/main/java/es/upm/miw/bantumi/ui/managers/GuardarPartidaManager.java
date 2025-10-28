@@ -15,7 +15,7 @@ public class GuardarPartidaManager {
 
     // ======= Configuración general =======
     public static final int MAX_SAVES   = 10;
-    public static final int THUMB_SIZE  = 256;
+    public static final int THUMB_SIZE  = 200;
     private static final String SAVES_DIR   = "saves";
     private static final String JSON_DIR    = "saves/json";
     private static final String THUMBS_DIR  = "saves/thumbs";

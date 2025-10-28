@@ -2,47 +2,64 @@ package es.upm.miw.bantumi.ui.managers;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.RectF;
 import android.view.View;
-public class MiniaturaManager {
 
+public class MiniaturaManager {
     public MiniaturaManager() {}
 
     /**
-     * Crea una miniatura cuadrada y escalada a partir de una vista.
-     *
-     * @param root Vista raíz que se quiere capturar (por ejemplo findViewById(R.id.main))
-     * @param thumbSize tamaño del lado del thumbnail (ej: 256)
-     * @return Bitmap cuadrado (listo para guardar o mostrar)
+     * Crea una miniatura cuadrada de 72x72 con recorte centrado en el tablero,
+     * escalada y con bordes redondeados.
      */
     public Bitmap crearMiniaturaCuadrada(View root, int thumbSize) {
         if (root == null) return null;
 
-        // Si aún no se ha dibujado, medimos y maquetamos
+        // Asegurar que la vista está medida y maquetada
         if (root.getWidth() == 0 || root.getHeight() == 0) {
-            int specW = View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.AT_MOST);
-            int specH = View.MeasureSpec.makeMeasureSpec(1920, View.MeasureSpec.AT_MOST);
+            int specW = View.MeasureSpec.makeMeasureSpec(3000, View.MeasureSpec.AT_MOST);
+            int specH = View.MeasureSpec.makeMeasureSpec(3000, View.MeasureSpec.AT_MOST);
             root.measure(specW, specH);
             root.layout(0, 0, root.getMeasuredWidth(), root.getMeasuredHeight());
         }
 
-        // 1) Bitmap del contenido completo
+        // 1️⃣ Dibujamos todo el contenido actual
         Bitmap full = Bitmap.createBitmap(root.getWidth(), root.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(full);
         root.draw(canvas);
 
-        // 2) Recorte central a cuadrado
-        int side = Math.min(full.getWidth(), full.getHeight());
-        int x = (full.getWidth() - side) / 2;
-        int y = (full.getHeight() - side) / 2;
-        Bitmap square = Bitmap.createBitmap(full, x, y, side, side);
+        // 2️⃣ Definimos una zona central donde está el tablero
+        int cropTop = (int) (full.getHeight() * 0.13f);
+        int cropBottom = (int) (full.getHeight() * 0.42f);
+        int cropHeight = cropBottom - cropTop;
+        int cropWidth = full.getWidth();
+        int side = Math.min(cropWidth, cropHeight);
 
-        // 3) Escalar al tamaño final deseado
-        Bitmap thumb = Bitmap.createScaledBitmap(square, thumbSize, thumbSize, true);
+        int x = (cropWidth - side) / 2;
+        int y = cropTop + (cropHeight - side) / 2;
+
+        Bitmap cropped = Bitmap.createBitmap(full, x, y, side, side);
+
+        // 3️⃣ Escalamos a 72x72
+        Bitmap scaled = Bitmap.createScaledBitmap(cropped, thumbSize, thumbSize, true);
+
+        // 4️⃣ Bordes redondeados (radio = 12 px por ejemplo)
+        Bitmap rounded = Bitmap.createBitmap(thumbSize, thumbSize, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(rounded);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        Path path = new Path();
+        float radius = 12f;
+        path.addRoundRect(new RectF(0, 0, thumbSize, thumbSize), radius, radius, Path.Direction.CW);
+        c.clipPath(path);
+        c.drawBitmap(scaled, 0, 0, paint);
 
         // Liberamos bitmaps intermedios
         full.recycle();
-        square.recycle();
+        cropped.recycle();
+        scaled.recycle();
 
-        return thumb;
+        return rounded;
     }
 }

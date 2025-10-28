@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="8dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
-    <ImageButton
-        android:id="@+id/btn_thumb"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:background="@null" />
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="12dp"
+        app:strokeWidth="0dp"
+        android:layout_marginBottom="6dp">
+
+        <ImageButton
+            android:id="@+id/btn_thumb"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:background="@null" />
+    </com.google.android.material.card.MaterialCardView>
 
     <ImageView
         android:id="@+id/img_thumb"
@@ -24,6 +38,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="6dp"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/monofonto"
         android:ellipsize="end"
         android:maxLines="1"
         android:textAlignment="center"

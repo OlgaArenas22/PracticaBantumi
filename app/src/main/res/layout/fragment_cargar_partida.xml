@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/saves_games_bar"
-    android:outlineAmbientShadowColor="@color/saves_games_bar"
+    android:clipToPadding="false"
+    android:clipChildren="false"
     android:id="@+id/cargarPartida">
 
     <TextView
@@ -22,7 +23,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
-        android:layout_margin="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="12dp"
         android:background="@android:color/holo_red_dark"
         android:contentDescription="Cerrar"
         android:scaleType="centerInside"
