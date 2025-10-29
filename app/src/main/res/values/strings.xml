@@ -108,4 +108,18 @@
     <string name="txtAviso">¡Atención!</string>
     <string name="txtNoResultadosBorrar">No hay nada que borrar</string>
 
+    <!-- Filtrar resultados -->
+    <string name="txtFiltrar">Filtrar resultados</string>
+    <string name="txtLimpiar">Limpiar</string>
+    <string name="txtAplicar">Aplicar</string>
+    <string name="txtFiltrarResultados">Filtrar resultados</string>
+    <string name="txtOrdenarPorSemillas">Ordenar por semillas</string>
+    <string name="txtAscendente">Ascendente</string>
+    <string name="txtDescendente">Descendente</string>
+    <string name="txtResultado">Resultado</string>
+    <string name="txtTodas">Todas</string>
+    <string name="txtVictorias">Victorias</string>
+    <string name="txtDerrotas">Derrotas</string>
+    <string name="txtTodos">Todos</string>
+    <string name="txtBuscarPorNombre">Buscar por nombre</string>
 </resources>
