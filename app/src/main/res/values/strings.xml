@@ -12,6 +12,7 @@
     <string name="btnGuardar">Guardar</string>
     <string name="btnCerrar">Cerrar</string>
     <string name="btnSalir">Salir</string>
+    <string name="txtBorrar">Borrar</string>
 
     <!-- Cambiar nombre jugador-->
     <string name="hintPlayer1Name">Jugador 1</string>
@@ -88,5 +89,23 @@
     <string name="txtGanador">¡Has ganado!</string>>
     <string name="txtPerdedor">Has perdido :(</string>
     <string name="txtEmpate">Empate</string>
+
+    <!-- Resultados -->
+    <string name="txtResultados">Resultados</string>
+    <string name="txtResults_empty">No hay resultados que mostrar</string>
+    <string name="txtTrofeo">Trofeo</string>
+    <string name="txtCorona">Corona</string>
+    <string name="txtEliminarResultados">Este cambio es irreversible y los resultados se borrarán para siempre</string>
+    <string name="txtResultsDeletedOK">Los resultados se han eliminado correctamente</string>
+    <string name="txtResultsDeletedERROR">Los resultados no han podido ser eliminados</string>
+    <string name="txtNombre">Nombre</string>
+    <string name="txtW">W</string>
+    <string name="txtSJ1">SJ1</string>
+    <string name="txtSJ2">SJ2</string>
+    <string name="txtModo">Modo</string>
+    <string name="txtTiempo">Tiempo</string>
+    <string name="txtFecha">Fecha</string>
+    <string name="txtAviso">¡Atención!</string>
+    <string name="txtNoResultadosBorrar">No hay nada que borrar</string>
 
 </resources>

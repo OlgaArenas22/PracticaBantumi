@@ -6,6 +6,8 @@
     <color name="cancel_red">#E53935</color>
     <color name="saves_games_bar">#31B0AB</color>
     <color name="crown_color">#F0C219</color>
+    <color name="silver">#CCCCCC</color>
+    <color name="bronze">#6E4D25</color>
     <color name="saves_games_background">#F2AE41</color>
     <color name="md_theme_light_primary">#FFEFB565</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>

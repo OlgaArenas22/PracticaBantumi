@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/results_header_row"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/saves_games_background"
+    android:padding="8dp"
+    android:orientation="horizontal">
+
+    <!-- Pos / Ranking -->
+    <LinearLayout
+        android:layout_width="72dp"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/podium_24px"
+            android:contentDescription="@string/txtResultados" />
+    </LinearLayout>
+
+    <!-- Nombre -->
+    <TextView
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:text="@string/txtNombre"
+        android:fontFamily="@font/monofonto"
+        android:textColor="@android:color/white" />
+
+    <!-- W (corona) -->
+    <TextView
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/txtW"
+        android:fontFamily="@font/monofonto"
+        android:textColor="@android:color/white" />
+
+    <!-- J1 -->
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/txtSJ1"
+        android:fontFamily="@font/monofonto"
+        android:textColor="@android:color/white" />
+
+    <!-- J2 -->
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/txtSJ2"
+        android:fontFamily="@font/monofonto"
+        android:textColor="@android:color/white" />
+
+    <!-- Modo -->
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/txtModo"
+        android:fontFamily="@font/monofonto"
+        android:textColor="@android:color/white" />
+
+    <!-- Tiempo -->
+    <TextView
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="@string/txtTiempo"
+        android:gravity="center"
+        android:fontFamily="@font/monofonto"
+        android:textColor="@android:color/white" />
+
+    <!-- Fecha -->
+    <TextView
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="@string/txtFecha"
+        android:gravity="center"
+        android:fontFamily="@font/monofonto"
+        android:textColor="@android:color/white" />
+</LinearLayout>
