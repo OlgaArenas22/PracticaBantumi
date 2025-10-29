@@ -4,7 +4,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/saves_games_background"
-    android:padding="8dp"
+    android:paddingTop="15dp"
+    android:paddingLeft="25dp"
+    android:paddingBottom="8dp"
     android:orientation="horizontal">
 
     <!-- Pos / Ranking -->
