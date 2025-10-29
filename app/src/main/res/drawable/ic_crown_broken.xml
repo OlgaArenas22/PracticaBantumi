@@ -3,18 +3,27 @@
     android:height="48dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
-    <!-- corona izquierda -->
+
     <path
         android:fillColor="#2E1852"
-        android:pathData="M3,7l4,4l2,-5l3,4l0,6H5z"/>
-    <!-- corona derecha -->
+        android:strokeWidth="0.5"
+        android:strokeLineJoin="bevel"
+        android:strokeLineCap="round"
+        android:pathData="
+            M 3 7             L 7 11            L 9 6             L 11.5 10
+            L 10 11.5         L 11.5 13           L 10 14.5         L 11.5 16
+            L 11 17           L 5 17            Z"
+        />
+
     <path
         android:fillColor="#2E1852"
-        android:pathData="M21,7l-4,4l-2,-5l-3,4l0,6h7z"/>
-    <!-- “fractura” central -->
-    <path
-        android:fillColor="#1A0D2E"
-        android:pathData="M12,6l-1,2l2,2l-2,2l2,2l-1,2"
-        android:strokeColor="#1A0D2E"
-        android:strokeWidth="0.5"/>
+        android:strokeWidth="0.5"
+        android:strokeLineJoin="bevel"
+        android:strokeLineCap="round"
+        android:pathData="
+            M 21 7            L 17 11           L 15 6            L 12.5 10
+            L 14 11.5         L 12.5 13           L 14 14.5         L 12.5 16
+            L 13 17           L 19 17           Z"
+        />
+
 </vector>
