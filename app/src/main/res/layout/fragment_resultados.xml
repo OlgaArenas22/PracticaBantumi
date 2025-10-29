@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/results_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/saves_games_bar"
+    android:clipToPadding="false"
+    android:clipChildren="false">
+
+    <!-- Título centrado -->
+    <TextView
+        android:id="@+id/results_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtResultados"
+        android:fontFamily="@font/super_comic"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:padding="16dp"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Botón cerrar (X) -->
+    <ImageButton
+        android:id="@+id/btn_close_results"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="12dp"
+        android:background="@android:color/holo_red_dark"
+        android:contentDescription="@string/btnCerrar"
+        android:scaleType="centerInside"
+        android:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+    <!-- Papelera: debajo del título -->
+    <ImageButton
+        android:id="@+id/btn_delete_all"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_below="@id/results_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_delete"
+        app:tint="@color/cancel_red"
+        android:contentDescription="@string/txtBorrar" />
+
+    <!-- Texto vacío (cuando no hay datos) -->
+    <TextView
+        android:id="@+id/results_empty_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_delete_all"
+        android:padding="4dp"
+        android:text="@string/txtResults_empty"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/monofonto"
+        android:gravity="center_horizontal"
+        android:visibility="gone" />
+
+    <!-- CONTENEDOR HORIZONTAL: cabecera + lista -->
+    <HorizontalScrollView
+        android:id="@+id/results_hscroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/results_empty_text"
+        android:fillViewport="true"
+        android:scrollbars="horizontal">
+
+        <!-- Vertical: cabecera fija arriba, lista debajo -->
+        <LinearLayout
+            android:id="@+id/results_scroll_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- Cabecera de columnas (ancho alineado con las filas) -->
+            <include
+                android:id="@+id/results_header"
+                layout="@layout/results_header" />
+
+            <!-- Lista (scroll vertical) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/results_recycler"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/saves_games_background"
+                android:overScrollMode="ifContentScrolls"
+                android:scrollbars="vertical" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</RelativeLayout>

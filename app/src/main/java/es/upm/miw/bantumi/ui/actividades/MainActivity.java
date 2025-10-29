@@ -28,6 +28,7 @@ import java.util.Locale;
 
 import es.upm.miw.bantumi.data.database.entities.ResultEntity;
 import es.upm.miw.bantumi.data.network.ResultRepository;
+import es.upm.miw.bantumi.ui.fragmentos.CargarPartidaFragment;
 import es.upm.miw.bantumi.ui.fragmentos.ElegirModoDialog;
 import es.upm.miw.bantumi.ui.fragmentos.ElegirNombreDialog;
 import es.upm.miw.bantumi.ui.fragmentos.ElegirTurnoDialog;
@@ -37,6 +38,7 @@ import es.upm.miw.bantumi.dominio.logica.JuegoBantumi.Turno;
 import es.upm.miw.bantumi.ui.fragmentos.FinPartidaDialog;
 import es.upm.miw.bantumi.ui.fragmentos.GuardarPartidaDialog;
 import es.upm.miw.bantumi.ui.fragmentos.ReiniciarPartidaDialog;
+import es.upm.miw.bantumi.ui.fragmentos.ResultadosFragment;
 import es.upm.miw.bantumi.ui.managers.CargarPartidaManager;
 import es.upm.miw.bantumi.ui.managers.GuardarPartidaManager;
 import es.upm.miw.bantumi.ui.managers.MiniaturaManager;
@@ -324,6 +326,13 @@ public class MainActivity extends AppCompatActivity {
 //            case R.id.opcAjustes: // @todo Preferencias
 //                startActivity(new Intent(this, BantumiPrefs.class));
 //                return true;
+            case R.id.opcMejoresResultados:
+                getSupportFragmentManager().beginTransaction()
+                        .setReorderingAllowed(true)
+                        .replace(R.id.main, ResultadosFragment.newInstance())
+                        .addToBackStack("results")
+                        .commit();
+                return true;
             case R.id.opcReiniciarPartida:
                 new ReiniciarPartidaDialog().show(getSupportFragmentManager(),"DIALOG_REBOOT_GAME");
                 return true;
@@ -335,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction()
                         .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
                                 android.R.anim.fade_in, android.R.anim.fade_out)
-                        .replace(R.id.main, new es.upm.miw.bantumi.ui.fragmentos.CargarPartidaFragment())
+                        .replace(R.id.main, new CargarPartidaFragment())
                         .addToBackStack("cargar_partida")
                         .commit();
                 return true;
@@ -427,10 +436,7 @@ public class MainActivity extends AppCompatActivity {
                 );
         repo.insertAsync(entity);
 
-        // 5) Formato texto del tiempo para el diálogo (mm:ss o hh:mm:ss)
-        String elapsedText = formatElapsed(elapsedMillis);
-
-        // 6) Mostrar diálogo fin de partida
+        // 5) Mostrar diálogo fin de partida
         new FinPartidaDialog(player1Name,player1Won).show(getSupportFragmentManager(), "FIN_PARTIDA_DIALOG");
     }
 
@@ -440,16 +446,6 @@ public class MainActivity extends AppCompatActivity {
                 : (minSeeds == 8) ? getString(R.string.txtFiebre)
                 : getString(R.string.txtClasico);
     }
-
-    private String formatElapsed(long ms) {
-        long totalSec = ms / 1000;
-        long h = totalSec / 3600;
-        long m = (totalSec % 3600) / 60;
-        long s = totalSec % 60;
-        if (h > 0) return String.format(java.util.Locale.getDefault(), "%d:%02d:%02d", h, m, s);
-        return String.format(java.util.Locale.getDefault(), "%02d:%02d", m, s);
-    }
-
 
     public Turno getTurnoInicial(){
         return this.turnoInicial;

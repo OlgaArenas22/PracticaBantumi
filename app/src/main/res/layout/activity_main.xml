@@ -5,22 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main"
+    android:background="@drawable/fondo_bantumi"
     tools:context=".ui.actividades.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/toolbar_bg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/toolbar_background" />
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
@@ -66,6 +61,9 @@
             android:padding="16dp"
             android:text="@string/txtPlayer2"
             android:textAlignment="center"
+            android:fontFamily="@font/monofonto"
+            android:textStyle="bold"
+            android:textColor="@color/white"
             android:textSize="24sp"
             tools:ignore="RtlCompat,RtlHardcoded" />
 
@@ -85,7 +83,7 @@
                 android:paddingBottom="24dp"
                 android:maxLines="1"
                 android:text="@string/txtInitialScore"
-                android:textColor="@color/teal_700"
+                android:textColor="@color/white"
                 android:textSize="56sp"
                 android:textStyle="bold" />
 
@@ -178,7 +176,7 @@
                 android:paddingBottom="24dp"
                 android:maxLines="1"
                 android:text="@string/txtInitialScore"
-                android:textColor="@color/teal_700"
+                android:textColor="@color/white"
                 android:textSize="56sp"
                 android:textStyle="bold" />
 
@@ -195,6 +193,9 @@
             android:text="@string/txtPlayer1"
             android:textAlignment="center"
             android:textSize="24sp"
+            android:fontFamily="@font/monofonto"
+            android:textStyle="bold"
+            android:textColor="@color/white"
             tools:ignore="RtlCompat,RtlHardcoded" />
     </LinearLayout>
 </RelativeLayout>

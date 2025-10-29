@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/result_row_card"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp"
+    app:strokeWidth="0dp"
+    app:cardUseCompatPadding="true">
+
+    <!-- === Contenido: tus columnas tal cual, pero SIN background naranja en la fila === -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+        <!-- Col 1: Posición / Trofeo con sombra -->
+        <FrameLayout
+            android:layout_width="72dp"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/row_pos_icon_shadow"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:translationX="1dp"
+                android:translationY="1dp"
+                android:alpha="0.35"
+                app:tint="#000000"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/row_pos_icon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/row_pos_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:includeFontPadding="false"
+                android:shadowColor="#33000000"
+                android:shadowDx="1.5"
+                android:shadowDy="1.5"
+                android:shadowRadius="2.5"/>
+        </FrameLayout>
+
+        <!-- Col 2: Nombre (IZQUIERDA) -->
+        <TextView
+            android:id="@+id/row_player_name"
+            android:layout_width="160dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|start"
+            android:paddingStart="4dp"
+            android:textStyle="bold"
+            android:fontFamily="@font/monofonto"
+            android:textColor="@android:color/black"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:shadowColor="#33000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.5"
+            android:shadowRadius="2.5"/>
+
+        <!-- Col 3: Corona (centrada) -->
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/row_crown_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/txtCorona"/>
+        </FrameLayout>
+
+        <!-- Col 4: J1 -->
+        <TextView
+            android:id="@+id/row_seeds_p1"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:fontFamily="@font/monofonto"
+            android:textColor="@android:color/black"
+            android:includeFontPadding="false"
+            android:shadowColor="#33000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.5"
+            android:shadowRadius="2.5"/>
+
+        <!-- Col 5: J2 -->
+        <TextView
+            android:id="@+id/row_seeds_p2"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:fontFamily="@font/monofonto"
+            android:textColor="@android:color/black"
+            android:includeFontPadding="false"
+            android:shadowColor="#33000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.5"
+            android:shadowRadius="2.5"/>
+
+        <!-- Col 6: Modo -->
+        <FrameLayout
+            android:layout_width="60dp"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/row_mode_icon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/txtModoJuego"/>
+        </FrameLayout>
+
+        <!-- Col 7: Tiempo -->
+        <TextView
+            android:id="@+id/row_time_text"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:fontFamily="@font/monofonto"
+            android:textColor="@android:color/black"
+            android:includeFontPadding="false"
+            android:shadowColor="#33000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.5"
+            android:shadowRadius="2.5"/>
+
+        <!-- Col 8: Fecha -->
+        <TextView
+            android:id="@+id/row_date_text"
+            android:layout_width="180dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:fontFamily="@font/monofonto"
+            android:textColor="@android:color/black"
+            android:includeFontPadding="false"
+            android:shadowColor="#33000000"
+            android:shadowDx="1.5"
+            android:shadowDy="1.5"
+            android:shadowRadius="2.5"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
