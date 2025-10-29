@@ -46,6 +46,7 @@ import es.upm.miw.bantumi.ui.viewmodel.CargarPartidaViewModel;
 public class MainActivity extends AppCompatActivity {
 
     protected final String LOG_TAG = "MiW";
+    private long pauseOffset = 0L;
     public JuegoBantumi juegoBantumi;
     private BantumiViewModel bantumiVM;
     private CargarPartidaViewModel cargarVM;
@@ -101,15 +102,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void resumeCronometro(){
+        cronometro.setBase(SystemClock.elapsedRealtime() - pauseOffset);
         cronometro.start();
     }
 
     public void stopCronometro() {
+        pauseOffset = SystemClock.elapsedRealtime() - cronometro.getBase();
         cronometro.stop();
     }
 
     public void resetCronometro() {
         cronometro.stop();
+        pauseOffset = 0L;
         cronometro.setBase(SystemClock.elapsedRealtime());
     }
 
