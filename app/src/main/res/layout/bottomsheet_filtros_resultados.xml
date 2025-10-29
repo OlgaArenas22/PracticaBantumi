@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/teal_700">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Ordenar por semillas -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/monofonto"
+            android:paddingBottom="8dp"
+            android:layout_marginHorizontal="105dp"
+            android:text="@string/txtFiltrarResultados"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txtOrdenarPorSemillas"
+            android:textStyle="bold"
+            android:fontFamily="@font/monofonto"
+            android:textColor="@color/white"/>
+
+        <RadioGroup
+            android:id="@+id/rgOrder"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/rbSeedsAsc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txtAscendente"
+                android:fontFamily="@font/monofonto"
+                android:textColor="@color/white"/>
+
+            <RadioButton
+                android:id="@+id/rbSeedsDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txtDescendente"
+                android:fontFamily="@font/monofonto"
+                android:textColor="@color/white"/>
+        </RadioGroup>
+
+        <!-- Resultado -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txtResultado"
+            android:textStyle="bold"
+            android:fontFamily="@font/monofonto"
+            android:textColor="@color/white"
+            android:paddingTop="12dp"/>
+
+        <RadioGroup
+            android:id="@+id/rgOutcome"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/rbAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txtTodas"
+                android:fontFamily="@font/monofonto"
+                android:textColor="@color/white"/>
+
+            <RadioButton
+                android:id="@+id/rbWins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txtVictorias"
+                android:fontFamily="@font/monofonto"
+                android:textColor="@color/white"/>
+
+            <RadioButton
+                android:id="@+id/rbLosses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txtDerrotas"
+                android:fontFamily="@font/monofonto"
+                android:textColor="@color/white"/>
+        </RadioGroup>
+
+        <!-- Modo de juego -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txtModoJuego"
+            android:textStyle="bold"
+            android:fontFamily="@font/monofonto"
+            android:textColor="@color/white"
+            android:paddingTop="12dp"/>
+
+        <RadioGroup
+            android:id="@+id/rgMode"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/rbAllModes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txtTodos"
+                android:fontFamily="@font/monofonto"
+                android:textColor="@color/white"/>
+
+            <RadioButton
+                android:id="@+id/rbModeA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txtClasico"
+                android:fontFamily="@font/monofonto"
+                android:textColor="@color/white"/>
+
+            <RadioButton
+                android:id="@+id/rbModeB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txtRapido"
+                android:fontFamily="@font/monofonto"
+                android:textColor="@color/white"/>
+
+            <RadioButton
+                android:id="@+id/rbModeC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txtFiebre"
+                android:fontFamily="@font/monofonto"
+                android:textColor="@color/white"/>
+        </RadioGroup>
+
+        <!-- Nombre -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txtNombre"
+            android:textStyle="bold"
+            android:fontFamily="@font/monofonto"
+            android:textColor="@color/white"
+            android:paddingTop="12dp"/>
+
+        <EditText
+            android:id="@+id/etPlayerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/txtBuscarPorNombre"
+            android:inputType="textPersonName"
+            android:fontFamily="@font/monofonto"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"/>
+
+        <!-- Botones -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnClear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/CancelButtonStyle"
+                android:text="@string/txtLimpiar"/>
+
+            <Button
+                android:id="@+id/btnApply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ConfirmButtonStyle"
+                android:text="@string/txtAplicar"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

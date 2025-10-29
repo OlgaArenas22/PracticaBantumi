@@ -22,6 +22,7 @@ import java.util.List;
 import es.upm.miw.bantumi.R;
 import es.upm.miw.bantumi.data.database.entities.ResultEntity;
 import es.upm.miw.bantumi.ui.adapters.ResultadosAdapter;
+import es.upm.miw.bantumi.ui.viewmodel.FilterState;
 import es.upm.miw.bantumi.ui.viewmodel.ResultadosViewModel;
 
 public class ResultadosFragment extends Fragment {
@@ -60,6 +61,7 @@ public class ResultadosFragment extends Fragment {
         btnClose = view.findViewById(R.id.btn_close_results);
         btnDeleteAll = view.findViewById(R.id.btn_delete_all);
         emptyText = view.findViewById(R.id.results_empty_text);
+        ImageButton btnFilter = view.findViewById(R.id.btn_filter);
 
         // --- ViewModel ---
         viewModel = new ViewModelProvider(requireActivity()).get(ResultadosViewModel.class);
@@ -74,6 +76,23 @@ public class ResultadosFragment extends Fragment {
                 requireActivity().getSupportFragmentManager().popBackStack()
         );
 
+        btnFilter.setOnClickListener(v -> {
+            FilterState current = viewModel.getCurrentFilter();
+            FiltrosResultadosBottomSheet
+                    .newInstance(current, new FiltrosResultadosBottomSheet.OnApplyFilters() {
+                        @Override
+                        public void onApply(FilterState filter) {
+                            viewModel.applyFilter(filter);
+                        }
+                        @Override
+                        public void onClear() {
+                            viewModel.applyFilter(FilterState.defaults());
+                        }
+                    })
+                    .show(getParentFragmentManager(), "FiltroResultadosDialog");
+        });
+
+
         // --- Botón Borrar Todos ---
         btnDeleteAll.setOnClickListener(v -> {
             if (adapter == null || adapter.getItemCount() == 0) {
@@ -86,7 +105,7 @@ public class ResultadosFragment extends Fragment {
         });
 
         // --- Observadores ---
-        viewModel.getTop10().observe(getViewLifecycleOwner(), this::renderList);
+        viewModel.getResults().observe(getViewLifecycleOwner(), this::renderList);
         viewModel.getDeleteAllSuccess().observe(getViewLifecycleOwner(), success -> {
             if (Boolean.TRUE.equals(success) && getView() != null) {
                 Snackbar.make(getView(), R.string.txtResultsDeletedOK, Snackbar.LENGTH_SHORT).show();

@@ -26,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Locale;
 
+import es.upm.miw.bantumi.data.database.ResultDatabase;
 import es.upm.miw.bantumi.data.database.entities.ResultEntity;
 import es.upm.miw.bantumi.data.network.ResultRepository;
 import es.upm.miw.bantumi.ui.fragmentos.CargarPartidaFragment;
@@ -420,8 +421,6 @@ public class MainActivity extends AppCompatActivity {
         String mode = mapMode();
 
         // 4) Guardar en Room (en background)
-        ResultRepository repo =
-                new ResultRepository(getApplicationContext());
 
         ResultEntity entity =
                 new ResultEntity(
@@ -434,6 +433,7 @@ public class MainActivity extends AppCompatActivity {
                         System.currentTimeMillis(),
                         player1Won
                 );
+        ResultRepository repo = ResultRepository.getInstance(getApplicationContext());
         repo.insertAsync(entity);
 
         // 5) Mostrar diálogo fin de partida
