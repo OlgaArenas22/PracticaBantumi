@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        es.upm.miw.bantumi.ui.temas.ThemeManager.applyThemeToRoot(this);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -354,6 +355,14 @@ public class MainActivity extends AppCompatActivity {
                                 android.R.anim.fade_in, android.R.anim.fade_out)
                         .replace(R.id.main, new CargarPartidaFragment())
                         .addToBackStack("cargar_partida")
+                        .commit();
+                return true;
+            case R.id.opcTemas:
+                getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                                android.R.anim.fade_in, android.R.anim.fade_out)
+                        .replace(R.id.main, new es.upm.miw.bantumi.ui.fragmentos.TemasFragment())
+                        .addToBackStack("temas")
                         .commit();
                 return true;
             case R.id.opcAcercaDe:

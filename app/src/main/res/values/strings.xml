@@ -122,4 +122,23 @@
     <string name="txtDerrotas">Derrotas</string>
     <string name="txtTodos">Todos</string>
     <string name="txtBuscarPorNombre">Buscar por nombre</string>
+
+    <!-- Temas -->
+    <string name="temas_menu">Temas</string>
+    <string name="temas_titulo">Elige un tema</string>
+    <string name="temas_cerrar">Cerrar</string>
+
+    <string name="tema_clasico">Clásico</string>
+    <string name="tema_verde">Verde</string>
+    <string name="tema_azul">Azul</string>
+    <string name="tema_rojo">Rojo</string>
+    <string name="tema_morado">Morado</string>
+    <string name="tema_negro">Negro</string>
+    <string name="tema_neon">Neón</string>
+    <string name="tema_dorado">Dorado</string>
+
+    <string name="temas_confirmar_cambio">¿Quieres cambiar el tema a “%1$s”?</string>
+    <string name="temas_btn_si">Sí</string>
+    <string name="temas_btn_no">No</string>
+
 </resources>

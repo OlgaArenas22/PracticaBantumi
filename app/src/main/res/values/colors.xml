@@ -10,6 +10,14 @@
     <color name="bronze">#6E4D25</color>
     <color name="saves_games_background">#F2AE41</color>
     <color name="md_theme_light_primary">#FFEFB565</color>
+    <color name="dorado">#efb810</color>
+    <color name="verde">#75b645</color>
+    <color name="azul">#3b77af</color>
+    <color name="rojo">#a72f29</color>
+    <color name="morado">#874f99</color>
+    <color name="negro_bantumi">#3f3f3f</color>
+    <color name="neon_fondo">#1b2138</color>
+    <color name="neon_borde">#ccf2fd</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
     <color name="md_theme_light_primaryContainer">#FFDCBE</color>
     <color name="md_theme_light_onPrimaryContainer">#2C1600</color>
