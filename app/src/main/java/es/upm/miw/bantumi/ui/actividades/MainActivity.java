@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -26,7 +27,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Locale;
 
-import es.upm.miw.bantumi.data.database.ResultDatabase;
 import es.upm.miw.bantumi.data.database.entities.ResultEntity;
 import es.upm.miw.bantumi.data.network.ResultRepository;
 import es.upm.miw.bantumi.ui.fragmentos.CargarPartidaFragment;
@@ -45,6 +45,8 @@ import es.upm.miw.bantumi.ui.managers.GuardarPartidaManager;
 import es.upm.miw.bantumi.ui.managers.MiniaturaManager;
 import es.upm.miw.bantumi.ui.viewmodel.BantumiViewModel;
 import es.upm.miw.bantumi.ui.viewmodel.CargarPartidaViewModel;
+import android.os.Handler;
+import android.os.Looper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,6 +60,69 @@ public class MainActivity extends AppCompatActivity {
     int numInicialSemillas;
     private GuardarPartidaManager guardarMgr;
     private MiniaturaManager miniaturaMgr;
+
+    private int selectedPitIndex = -1;
+    private View selectedPitView = null;
+
+    private View getPitView(int pos) {
+        String num2digitos = String.format(Locale.getDefault(), "%02d", pos);
+        int id = getResources().getIdentifier("casilla_" + num2digitos, "id", getPackageName());
+        return (id != 0) ? findViewById(id) : null;
+    }
+
+    private void markSelected(int pos) {
+        try {
+            // Desmarcar anterior
+            if (selectedPitView != null) selectedPitView.setSelected(false);
+
+            selectedPitIndex = pos;
+            View v = getPitView(pos);
+            selectedPitView = v;
+            if (v == null) { selectedPitIndex = -1; return; }
+
+            v.setSelected(true);
+
+            // Si la vista no está lista para animarse, difiere la animación
+            boolean attached = androidx.core.view.ViewCompat.isAttachedToWindow(v);
+            boolean laidOut = androidx.core.view.ViewCompat.isLaidOut(v); // true si ya tiene medidas/pos
+            if (!attached || !laidOut || v.getWidth() == 0 || v.getHeight() == 0) {
+                v.post(() -> safePulse(v));
+            } else {
+                safePulse(v);
+            }
+        } catch (Throwable t) {
+            // Fallback ultra seguro: no animar, solo estado visual
+            if (selectedPitView != null) selectedPitView.setSelected(true);
+        }
+    }
+    private void safePulse(@NonNull View v) {
+        try {
+            // Usa referencia local; no dependas de selectedPitView que puede cambiar
+            v.animate().cancel();
+            v.animate()
+                    .scaleX(1.06f)
+                    .scaleY(1.06f)
+                    .setDuration(120)
+                    .withEndAction(() -> {
+                        try {
+                            v.animate().scaleX(1f).scaleY(1f).setDuration(120).start();
+                        } catch (Throwable ignore) {}
+                    })
+                    .start();
+        } catch (Throwable ignore) {
+            // Si fallara por cualquier motivo, simplemente no animamos
+        }
+    }
+
+
+    private void clearSelected() {
+        if (selectedPitView != null) {
+            selectedPitView.setSelected(false);
+            selectedPitView = null;
+        }
+        selectedPitIndex = -1;
+    }
+    // === Fin selección ===
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -74,18 +139,14 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         cronometro = findViewById(R.id.cronometro);
-        //Formato del cronómetro
         cronometro.setOnChronometerTickListener(ch -> {
             long elapsed = SystemClock.elapsedRealtime() - ch.getBase();
             long s = elapsed / 1000;
             long h = s / 3600;
             long m = (s % 3600) / 60;
             long sec = s % 60;
-            if (h > 0) {
-                ch.setText(String.format("%d:%02d:%02d", h, m, sec));
-            } else {
-                ch.setText(String.format("%02d:%02d", m, sec));
-            }
+            if (h > 0) ch.setText(String.format("%d:%02d:%02d", h, m, sec));
+            else ch.setText(String.format("%02d:%02d", m, sec));
         });
 
         resetCronometro();
@@ -94,44 +155,19 @@ public class MainActivity extends AppCompatActivity {
         cargarVM = new ViewModelProvider(this).get(CargarPartidaViewModel.class);
         observarEventosCargarPartida();
 
-        //Permite cambiar el nombre del jugador al empezar el juego
         new ElegirNombreDialog().show(getSupportFragmentManager(), "DIALOG_NOMBRE");
     }
 
     //region Cronómetro
-    public void startCronometro() {
-        cronometro.setBase(SystemClock.elapsedRealtime());
-        cronometro.start();
-    }
-
-    public void resumeCronometro(){
-        cronometro.setBase(SystemClock.elapsedRealtime() - pauseOffset);
-        cronometro.start();
-    }
-
-    public void stopCronometro() {
-        pauseOffset = SystemClock.elapsedRealtime() - cronometro.getBase();
-        cronometro.stop();
-    }
-
-    public void resetCronometro() {
-        cronometro.stop();
-        pauseOffset = 0L;
-        cronometro.setBase(SystemClock.elapsedRealtime());
-    }
-
+    public void startCronometro() { cronometro.setBase(SystemClock.elapsedRealtime()); cronometro.start(); }
+    public void resumeCronometro(){ cronometro.setBase(SystemClock.elapsedRealtime() - pauseOffset); cronometro.start(); }
+    public void stopCronometro() { pauseOffset = SystemClock.elapsedRealtime() - cronometro.getBase(); cronometro.stop(); }
+    public void resetCronometro() { cronometro.stop(); pauseOffset = 0L; cronometro.setBase(SystemClock.elapsedRealtime()); }
     //endregion
 
     //region ElegirModoJuego
-    public void onMostrarElegirModo() {
-        new ElegirModoDialog().show(getSupportFragmentManager(), "DIALOG_MODO");
-    }
-    public void onModoSeleccionado(int semillasIniciales) {
-        // Cambia dinámicamente las semillas iniciales según el modo
-        numInicialSemillas = semillasIniciales;
-        onMostrarElegirTurno();
-    }
-
+    public void onMostrarElegirModo() { new ElegirModoDialog().show(getSupportFragmentManager(), "DIALOG_MODO"); }
+    public void onModoSeleccionado(int semillasIniciales) { numInicialSemillas = semillasIniciales; onMostrarElegirTurno(); }
     //endregion
 
     //region GuardarPartida
@@ -145,39 +181,36 @@ public class MainActivity extends AppCompatActivity {
             View root = findViewById(R.id.main);
             Bitmap thumb = miniaturaMgr.crearMiniaturaCuadrada(root, GuardarPartidaManager.THUMB_SIZE);
 
-            GuardarPartidaManager.SaveResult result = guardarMgr.guardarNuevaPartida(estado, nombreJ1, cronoTexto, cronoMillis, thumb, juegoBantumi.getNumInicialSemillas());
+            GuardarPartidaManager.SaveResult result = guardarMgr.guardarNuevaPartida(
+                    estado, nombreJ1, cronoTexto, cronoMillis, thumb, juegoBantumi.getNumInicialSemillas());
 
             Snackbar.make(findViewById(android.R.id.content),
-                    result.ok ? getString(R.string.txtPartidaGuardadaOK)
-                            : getString(R.string.txtPartidaGuardadaERROR),
+                    result.ok ? getString(R.string.txtPartidaGuardadaOK) : getString(R.string.txtPartidaGuardadaERROR),
                     Snackbar.LENGTH_LONG).show();
 
         } catch (Exception e) {
             Snackbar.make(findViewById(android.R.id.content),
-                    getString(R.string.txtPartidaGuardadaERROR),
-                    Snackbar.LENGTH_LONG).show();
+                    getString(R.string.txtPartidaGuardadaERROR), Snackbar.LENGTH_LONG).show();
         }
     }
 
     private long parseMmSsToMillis(@NonNull String text) {
-    String[] p = text.split(":");
-    long m = Long.parseLong(p[0]);
-    long s = Long.parseLong(p[1]);
-    return (m * 60 + s) * 1000L;
+        String[] p = text.split(":");
+        long m = Long.parseLong(p[0]);
+        long s = Long.parseLong(p[1]);
+        return (m * 60 + s) * 1000L;
     }
     //endregion
 
     //region CargarPartida
     private void observarEventosCargarPartida() {
-        // Confirmación: cargar la partida y cerrar fragment
         cargarVM.selectedFilename.observe(this, filename -> {
             if (filename == null) return;
             cargarPartida(filename);
-            getSupportFragmentManager().popBackStack(); // cerrar fragment
+            getSupportFragmentManager().popBackStack();
             cargarVM.clearEvents();
         });
 
-        // Cancelación: reanuda cronómetro y cerrar fragment
         cargarVM.cancel.observe(this, cancel -> {
             if (cancel == null || !cancel) return;
             resumeCronometro();
@@ -185,8 +218,8 @@ public class MainActivity extends AppCompatActivity {
             cargarVM.clearEvents();
         });
     }
+
     private void cargarPartida(String filename) {
-        // 1) Leer JSON completo de la partida
         CargarPartidaManager cargarMgr = new CargarPartidaManager(getApplicationContext());
         org.json.JSONObject save = cargarMgr.readSave(filename);
         if (save == null) {
@@ -197,15 +230,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         try {
-            // 2) Estado del juego (modelo) -> delega en tu propio motor
             String estado = save.getString("estado");
             juegoBantumi.deserializa(estado);
 
-            // 3) Nombre del jugador 1 (UI)
             String nombreJ1 = save.optString("jugador1", "");
             ((android.widget.TextView) findViewById(R.id.tvPlayer1)).setText(nombreJ1);
 
-            // 4) Cronómetro
             long cronoMillis = save.optLong("cronometro_millis", 0L);
             cronometro.stop();
             cronometro.setBase(android.os.SystemClock.elapsedRealtime() - cronoMillis);
@@ -219,87 +249,68 @@ public class MainActivity extends AppCompatActivity {
             resumeCronometro();
         }
     }
-//endregion
+    //endregion
 
     public void onMostrarElegirTurno() {
         new ElegirTurnoDialog(getNombreJugador1())
                 .show(getSupportFragmentManager(), "DIALOG_TURNO");
     }
 
-    /**
-     * Instancia el ViewModel y el juego, y asigna observadores a los huecos
-     */
+    /** Instancia VM y juego; registra listener de selección y observadores */
     public void onIniciarPartida(Turno turno){
         this.turnoInicial = turno;
         resetCronometro();
         startCronometro();
         bantumiVM = new ViewModelProvider(this).get(BantumiViewModel.class);
         juegoBantumi = new JuegoBantumi(bantumiVM, turnoInicial, numInicialSemillas);
+
+        // Escuchar casilla elegida (J1 y J2)
+        juegoBantumi.setOnPitSelectedListener(pos -> runOnUiThread(() -> markSelected(pos)));
+
         crearObservadores();
     }
-    /**
-     * Crea y subscribe los observadores asignados a las posiciones del tablero.
-     * Si se modifica el contenido del tablero -> se actualiza la vista.
-     */
+
     private void crearObservadores() {
         for (int i = 0; i < JuegoBantumi.NUM_POSICIONES; i++) {
             int finalI = i;
-            bantumiVM.getNumSemillas(i).observe(    // Huecos y almacenes
-                    this,
-                    new Observer<Integer>() {
-                        @Override
-                        public void onChanged(Integer integer) {
-                            mostrarValor(finalI, juegoBantumi.getSemillas(finalI));
-                        }
-                    });
-        }
-        bantumiVM.getTurno().observe(   // Turno
-                this,
-                new Observer<JuegoBantumi.Turno>() {
-                    @Override
-                    public void onChanged(JuegoBantumi.Turno turno) {
-                        marcarTurno(juegoBantumi.turnoActual());
-                    }
+            bantumiVM.getNumSemillas(i).observe(this, new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer integer) {
+                    mostrarValor(finalI, juegoBantumi.getSemillas(finalI));
                 }
-        );
+            });
+        }
+        bantumiVM.getTurno().observe(this, turno -> {
+            // Pequeño delay para permitir que el highlight recién puesto se vea 1 instante
+            new Handler(Looper.getMainLooper()).postDelayed(this::clearSelected, 1000);
+            marcarTurno(juegoBantumi.turnoActual());
+        });
     }
 
-    /**
-     * Indica el turno actual cambiando el color del texto
-     *
-     * @param turnoActual turno actual
-     */
     private void marcarTurno(@NonNull JuegoBantumi.Turno turnoActual) {
         TextView tvJugador1 = findViewById(R.id.tvPlayer1);
         TextView tvJugador2 = findViewById(R.id.tvPlayer2);
         switch (turnoActual) {
             case turnoJ1:
-                tvJugador1.setTextColor(getColor(R.color.white));
-                tvJugador1.setBackgroundColor(getColor(android.R.color.holo_blue_light));
-                tvJugador2.setTextColor(getColor(R.color.black));
-                tvJugador2.setBackgroundColor(getColor(R.color.white));
-                break;
-            case turnoJ2:
                 tvJugador1.setTextColor(getColor(R.color.black));
                 tvJugador1.setBackgroundColor(getColor(R.color.white));
                 tvJugador2.setTextColor(getColor(R.color.white));
-                tvJugador2.setBackgroundColor(getColor(android.R.color.holo_blue_light));
+                tvJugador2.setBackgroundColor(Color.TRANSPARENT);
+                break;
+            case turnoJ2:
+                tvJugador1.setTextColor(getColor(R.color.white));
+                tvJugador1.setBackgroundColor(Color.TRANSPARENT);
+                tvJugador2.setTextColor(getColor(R.color.black));
+                tvJugador2.setBackgroundColor(getColor(R.color.white));
                 break;
             default:
-                tvJugador1.setTextColor(getColor(R.color.black));
-                tvJugador2.setTextColor(getColor(R.color.black));
+                tvJugador1.setTextColor(getColor(R.color.white));
+                tvJugador2.setTextColor(getColor(R.color.white));
         }
     }
 
-    /**
-     * Muestra el valor <i>valor</i> en la posición <i>pos</i>
-     *
-     * @param pos posición a actualizar
-     * @param valor valor a mostrar
-     */
     private void mostrarValor(int pos, int valor) {
         String num2digitos = String.format(Locale.getDefault(), "%02d", pos);
-        // Los identificadores de los huecos tienen el formato casilla_XX
         int idBoton = getResources().getIdentifier("casilla_" + num2digitos, "id", getPackageName());
         if (0 != idBoton) {
             TextView viewHueco = findViewById(idBoton);
@@ -308,7 +319,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //region Menú
-
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.opciones_menu, menu);
@@ -324,9 +334,6 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("NonConstantResourceId")
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-//            case R.id.opcAjustes: // @todo Preferencias
-//                startActivity(new Intent(this, BantumiPrefs.class));
-//                return true;
             case R.id.opcMejoresResultados:
                 getSupportFragmentManager().beginTransaction()
                         .setReorderingAllowed(true)
@@ -356,39 +363,26 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton(android.R.string.ok, null)
                         .show();
                 return true;
-
-            // @TODO!!! resto opciones
-
-            default:
-                Snackbar.make(
-                        findViewById(android.R.id.content),
-                        getString(R.string.txtSinImplementar),
-                        Snackbar.LENGTH_LONG
-                ).show();
         }
         return true;
     }
-
     //endregion
-    /**
-     * Acción que se ejecuta al pulsar sobre cualquier hueco
-     *
-     * @param v Vista pulsada (hueco)
-     */
+
+    /** Acción al pulsar un hueco */
     public void huecoPulsado(@NonNull View v) {
-        String resourceName = getResources().getResourceEntryName(v.getId()); // pXY
+        String resourceName = getResources().getResourceEntryName(v.getId());
         int num = Integer.parseInt(resourceName.substring(resourceName.length() - 2));
         Log.i(LOG_TAG, "huecoPulsado(" + resourceName + ") num=" + num);
         switch (juegoBantumi.turnoActual()) {
             case turnoJ1:
                 Log.i(LOG_TAG, "* Juega Jugador");
-                juegoBantumi.jugar(num);
+                juegoBantumi.jugar(num); // emitirá onPitSelected(num) -> markSelected(num)
                 break;
             case turnoJ2:
                 Log.i(LOG_TAG, "* Juega Computador");
-                juegoBantumi.juegaComputador();
+                juegoBantumi.juegaComputador(); // IA llamará a jugar() y también emitirá
                 break;
-            default:    // JUEGO TERMINADO
+            default:
                 finJuego();
         }
         if (juegoBantumi.juegoTerminado()) {
@@ -396,17 +390,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * El juego ha terminado. Volver a jugar?
-     */
+    /** Fin de juego */
     private void finJuego() {
-        // 1) Pausar cronómetro
+        // limpiar selección por si quedara marcada
+        clearSelected();
+
         stopCronometro();
-        long elapsedMillis = android.os.SystemClock.elapsedRealtime() - cronometro.getBase();
+        long elapsedMillis = SystemClock.elapsedRealtime() - cronometro.getBase();
 
         int seedsPlayer1 = juegoBantumi.getSemillas(6);
         int seedsPlayer2 = juegoBantumi.getSemillas(13);
-        // 2) Datos de nombres
+
         String player1Name = getNombreJugador1();
         String winnerName;
         boolean player1Won = seedsPlayer1 > seedsPlayer2;
@@ -417,10 +411,7 @@ public class MainActivity extends AppCompatActivity {
             winnerName = player1Won ? player1Name : getString(R.string.txtPlayer2);
         }
 
-        // 3) Modo por minSeeds
         String mode = mapMode();
-
-        // 4) Guardar en Room (en background)
 
         ResultEntity entity =
                 new ResultEntity(
@@ -436,7 +427,6 @@ public class MainActivity extends AppCompatActivity {
         ResultRepository repo = ResultRepository.getInstance(getApplicationContext());
         repo.insertAsync(entity);
 
-        // 5) Mostrar diálogo fin de partida
         new FinPartidaDialog(player1Name,player1Won).show(getSupportFragmentManager(), "FIN_PARTIDA_DIALOG");
     }
 

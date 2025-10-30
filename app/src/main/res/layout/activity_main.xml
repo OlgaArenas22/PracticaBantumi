@@ -94,7 +94,6 @@
                 android:orientation="vertical">
 
                 <!-- Jugador 2 -->
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -102,64 +101,75 @@
                     <Button
                         android:id="@+id/casilla_12"
                         style="@style/Widget.Bantumi.Button"
+                        android:background="@drawable/pit_bg_selector"
                         android:clickable="false" />
 
                     <Button
                         android:id="@+id/casilla_11"
                         style="@style/Widget.Bantumi.Button"
+                        android:background="@drawable/pit_bg_selector"
                         android:clickable="false" />
 
                     <Button
                         android:id="@+id/casilla_10"
                         style="@style/Widget.Bantumi.Button"
+                        android:background="@drawable/pit_bg_selector"
                         android:clickable="false" />
 
                     <Button
                         android:id="@+id/casilla_09"
                         style="@style/Widget.Bantumi.Button"
+                        android:background="@drawable/pit_bg_selector"
                         android:clickable="false" />
 
                     <Button
                         android:id="@+id/casilla_08"
                         style="@style/Widget.Bantumi.Button"
+                        android:background="@drawable/pit_bg_selector"
                         android:clickable="false" />
 
                     <Button
                         android:id="@+id/casilla_07"
                         style="@style/Widget.Bantumi.Button"
+                        android:background="@drawable/pit_bg_selector"
                         android:clickable="false" />
 
                 </LinearLayout>
 
                 <!-- Jugador 1 -->
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <Button
                         android:id="@+id/casilla_00"
-                        style="@style/Widget.Bantumi.Button" />
+                        style="@style/Widget.Bantumi.Button"
+                        android:background="@drawable/pit_bg_selector" />
 
                     <Button
                         android:id="@+id/casilla_01"
-                        style="@style/Widget.Bantumi.Button" />
+                        style="@style/Widget.Bantumi.Button"
+                        android:background="@drawable/pit_bg_selector" />
 
                     <Button
                         android:id="@+id/casilla_02"
-                        style="@style/Widget.Bantumi.Button" />
+                        style="@style/Widget.Bantumi.Button"
+                        android:background="@drawable/pit_bg_selector" />
 
                     <Button
                         android:id="@+id/casilla_03"
-                        style="@style/Widget.Bantumi.Button" />
+                        style="@style/Widget.Bantumi.Button"
+                        android:background="@drawable/pit_bg_selector" />
 
                     <Button
                         android:id="@+id/casilla_04"
-                        style="@style/Widget.Bantumi.Button" />
+                        style="@style/Widget.Bantumi.Button"
+                        android:background="@drawable/pit_bg_selector" />
 
                     <Button
                         android:id="@+id/casilla_05"
-                        style="@style/Widget.Bantumi.Button" />
+                        style="@style/Widget.Bantumi.Button"
+                        android:background="@drawable/pit_bg_selector" />
 
                 </LinearLayout>
 
