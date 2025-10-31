@@ -117,6 +117,8 @@ public class ResultadosFragment extends Fragment {
             }
         });
 
+        viewModel.loadDefault();
+
         // --- Comportamiento del botón físico “atrás” ---
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
