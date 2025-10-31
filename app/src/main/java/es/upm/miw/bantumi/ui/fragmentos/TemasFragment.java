@@ -13,8 +13,8 @@ import android.widget.ImageButton;
 import com.google.android.material.button.MaterialButton;
 
 import es.upm.miw.bantumi.R;
-import es.upm.miw.bantumi.ui.temas.ThemeManager;
-import es.upm.miw.bantumi.ui.temas.ThemeManager.ThemeId;
+import es.upm.miw.bantumi.ui.managers.ThemeManager;
+import es.upm.miw.bantumi.ui.managers.ThemeManager.ThemeId;
 
 public class TemasFragment extends Fragment {
 

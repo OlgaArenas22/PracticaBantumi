@@ -1,4 +1,4 @@
-package es.upm.miw.bantumi.ui.temas;
+package es.upm.miw.bantumi.ui.managers;
 
 import android.app.Activity;
 import android.content.Context;

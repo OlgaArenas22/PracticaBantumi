@@ -43,6 +43,7 @@ import es.upm.miw.bantumi.ui.fragmentos.ResultadosFragment;
 import es.upm.miw.bantumi.ui.managers.CargarPartidaManager;
 import es.upm.miw.bantumi.ui.managers.GuardarPartidaManager;
 import es.upm.miw.bantumi.ui.managers.MiniaturaManager;
+import es.upm.miw.bantumi.ui.managers.ThemeManager;
 import es.upm.miw.bantumi.ui.viewmodel.BantumiViewModel;
 import es.upm.miw.bantumi.ui.viewmodel.CargarPartidaViewModel;
 import android.os.Handler;
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        es.upm.miw.bantumi.ui.temas.ThemeManager.applyThemeToRoot(this);
+        ThemeManager.applyThemeToRoot(this);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -182,18 +183,30 @@ public class MainActivity extends AppCompatActivity {
             View root = findViewById(R.id.main);
             Bitmap thumb = miniaturaMgr.crearMiniaturaCuadrada(root, GuardarPartidaManager.THUMB_SIZE);
 
-            GuardarPartidaManager.SaveResult result = guardarMgr.guardarNuevaPartida(
-                    estado, nombreJ1, cronoTexto, cronoMillis, thumb, juegoBantumi.getNumInicialSemillas());
+            // 💡 tema actual
+            ThemeManager.ThemeId themeId =
+                    ThemeManager.getSelectedTheme(getApplicationContext());
 
-            Snackbar.make(findViewById(android.R.id.content),
-                    result.ok ? getString(R.string.txtPartidaGuardadaOK) : getString(R.string.txtPartidaGuardadaERROR),
-                    Snackbar.LENGTH_LONG).show();
+            // ⬇️ Llamada con tema (ver cambio en GuardarPartidaManager)
+            GuardarPartidaManager.SaveResult result =
+                    guardarMgr.guardarNuevaPartida(
+                            estado, nombreJ1, cronoTexto, cronoMillis,
+                            thumb, juegoBantumi.getNumInicialSemillas(),
+                            themeId.name()  // <<<<< guarda "CLASICO", "VERDE", etc
+                    );
+
+            com.google.android.material.snackbar.Snackbar.make(findViewById(android.R.id.content),
+                    result.ok ? getString(R.string.txtPartidaGuardadaOK)
+                            : getString(R.string.txtPartidaGuardadaERROR),
+                    com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show();
 
         } catch (Exception e) {
-            Snackbar.make(findViewById(android.R.id.content),
-                    getString(R.string.txtPartidaGuardadaERROR), Snackbar.LENGTH_LONG).show();
+            com.google.android.material.snackbar.Snackbar.make(findViewById(android.R.id.content),
+                    getString(R.string.txtPartidaGuardadaERROR),
+                    com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show();
         }
     }
+
 
     private long parseMmSsToMillis(@NonNull String text) {
         String[] p = text.split(":");
@@ -233,6 +246,17 @@ public class MainActivity extends AppCompatActivity {
         try {
             String estado = save.getString("estado");
             juegoBantumi.deserializa(estado);
+            // 🎨 Restaurar tema si viene en el save
+            String themeRaw = save.optString("theme", null);
+            if (themeRaw != null) {
+                try {
+                    ThemeManager.ThemeId id =
+                            ThemeManager.ThemeId.valueOf(themeRaw);
+                    ThemeManager.setSelectedTheme(getApplicationContext(), id);
+                    ThemeManager.applyThemeToRoot(this); // aplica fondo inmediatamente
+                } catch (IllegalArgumentException ignore) { /* tema desconocido: ignora */ }
+            }
+
 
             String nombreJ1 = save.optString("jugador1", "");
             ((android.widget.TextView) findViewById(R.id.tvPlayer1)).setText(nombreJ1);

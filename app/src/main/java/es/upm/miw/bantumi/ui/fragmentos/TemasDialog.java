@@ -14,8 +14,8 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import es.upm.miw.bantumi.R;
-import es.upm.miw.bantumi.ui.temas.ThemeManager;
-import es.upm.miw.bantumi.ui.temas.ThemeManager.ThemeId;
+import es.upm.miw.bantumi.ui.managers.ThemeManager;
+import es.upm.miw.bantumi.ui.managers.ThemeManager.ThemeId;
 
 public class TemasDialog extends DialogFragment {
 

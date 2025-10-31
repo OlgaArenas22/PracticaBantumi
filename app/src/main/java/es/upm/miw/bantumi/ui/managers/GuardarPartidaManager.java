@@ -45,7 +45,8 @@ public class GuardarPartidaManager {
             String cronoTexto,
             long cronoMillis,
             Bitmap thumbnail,
-            int numIniSeeds
+            int numIniSeeds,
+            String themeId
     ) {
         try {
             JSONObject index = loadIndex();
@@ -78,6 +79,9 @@ public class GuardarPartidaManager {
             saveData.put("thumbnail", thumbRelPath);
             saveData.put("seeds", numIniSeeds);
 
+            // 🎨 Guardar el tema actual
+            saveData.put("theme", themeId);
+
             writeWholeFileIn(JSON_DIR, jsonFilename, saveData.toString());
 
             // 3) Actualizar índice
@@ -102,6 +106,7 @@ public class GuardarPartidaManager {
             }
         }
     }
+
 
     private JSONObject loadIndex() {
         try {
