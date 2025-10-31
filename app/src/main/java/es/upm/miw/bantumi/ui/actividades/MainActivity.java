@@ -152,14 +152,26 @@ public class MainActivity extends AppCompatActivity {
             else ch.setText(String.format("%02d:%02d", m, sec));
         });
 
-        resetCronometro();
+        if (savedInstanceState == null) {
+            resetCronometro();
+        }
         guardarMgr = new GuardarPartidaManager(getApplicationContext());
         miniaturaMgr = new MiniaturaManager();
         cargarVM = new ViewModelProvider(this).get(CargarPartidaViewModel.class);
         observarEventosCargarPartida();
 
-        new ElegirNombreDialog().show(getSupportFragmentManager(), "DIALOG_NOMBRE");
+        if (savedInstanceState == null) {
+            final String TAG = "DIALOG_NOMBRE";
+            if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
+                new ElegirNombreDialog().show(getSupportFragmentManager(), TAG);
+            }
+        }
     }
+    @Override
+    public void onConfigurationChanged(@NonNull android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
 
     //region Cronómetro
     public void startCronometro() { cronometro.setBase(SystemClock.elapsedRealtime()); cronometro.start(); }
