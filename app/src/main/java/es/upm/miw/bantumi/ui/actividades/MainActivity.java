@@ -29,6 +29,7 @@ import java.util.Locale;
 
 import es.upm.miw.bantumi.data.database.entities.ResultEntity;
 import es.upm.miw.bantumi.data.network.ResultRepository;
+import es.upm.miw.bantumi.ui.fragmentos.AcercaDeDialog;
 import es.upm.miw.bantumi.ui.fragmentos.CargarPartidaFragment;
 import es.upm.miw.bantumi.ui.fragmentos.ElegirModoDialog;
 import es.upm.miw.bantumi.ui.fragmentos.ElegirNombreDialog;
@@ -390,11 +391,8 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
                 return true;
             case R.id.opcAcercaDe:
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.aboutTitle)
-                        .setMessage(R.string.aboutMessage)
-                        .setPositiveButton(android.R.string.ok, null)
-                        .show();
+                stopCronometro();
+                new AcercaDeDialog().show(getSupportFragmentManager(), "SHOWED_ABOUT");
                 return true;
         }
         return true;

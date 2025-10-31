@@ -37,8 +37,6 @@ public class ElegirNombreDialog extends DialogFragment {
 
         btnConfirmar.setOnClickListener(v -> {
             String nombreNuevo = etNombre.getText() == null ? "" : etNombre.getText().toString().trim();
-
-            // Actualizar el TextView y lanzar el siguiente diálogo
             if (getActivity() instanceof MainActivity) {
                 MainActivity main = (MainActivity) getActivity();
                 ((TextView) main.findViewById(R.id.tvPlayer1)).setText(nombreNuevo);
