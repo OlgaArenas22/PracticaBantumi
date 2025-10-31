@@ -32,7 +32,15 @@ public class ResultRepository {
         return dao.getTop10ByBestSeedsList();
     }
 
-    public void deleteAll(Callback callback) { /* igual que tienes */ }
+    public void deleteAll(Callback callback) {
+        io.execute(() -> {
+        try {
+            dao.clearAll();
+            if (callback != null) callback.onSuccess();
+        } catch (Exception e) {
+            if (callback != null) callback.onError(e);
+        }
+    });}
 
     public void insertAsync(ResultEntity entity) {
         io.execute(() -> {
