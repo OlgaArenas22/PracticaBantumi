@@ -9,7 +9,7 @@
     android:paddingBottom="8dp"
     android:orientation="horizontal">
 
-    <!-- Pos / Ranking -->
+    <!-- Ranking -->
     <LinearLayout
         android:layout_width="72dp"
         android:layout_height="wrap_content"

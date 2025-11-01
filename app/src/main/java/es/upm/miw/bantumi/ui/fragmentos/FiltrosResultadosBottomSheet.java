@@ -31,7 +31,6 @@ public class FiltrosResultadosBottomSheet extends BottomSheetDialogFragment {
     private OnApplyFilters callback;
 
     public FiltrosResultadosBottomSheet() {
-        // constructor vacío requerido
     }
 
     public static FiltrosResultadosBottomSheet newInstance(@Nullable FilterState filter,
@@ -40,7 +39,7 @@ public class FiltrosResultadosBottomSheet extends BottomSheetDialogFragment {
         Bundle args = new Bundle();
         args.putSerializable(ARG_FILTER, filter != null ? filter : FilterState.defaults());
         sheet.setArguments(args);
-        sheet.setOnApplyFilters(callback); // guardamos callback en campo (no en args)
+        sheet.setOnApplyFilters(callback);
         return sheet;
     }
 
@@ -66,7 +65,6 @@ public class FiltrosResultadosBottomSheet extends BottomSheetDialogFragment {
                 .inflate(R.layout.bottomsheet_filtros_resultados, null, false);
         dialog.setContentView(view);
 
-        // --- findViewById con chequeo defensivo ---
         RadioButton rbAsc   = view.findViewById(R.id.rbSeedsAsc);
         RadioButton rbDesc  = view.findViewById(R.id.rbSeedsDesc);
 
@@ -83,17 +81,14 @@ public class FiltrosResultadosBottomSheet extends BottomSheetDialogFragment {
         Button btnClear = view.findViewById(R.id.btnClear);
         Button btnApply = view.findViewById(R.id.btnApply);
 
-        // Si algún id no existe en el layout → evitar NPE y salir con un toast
         if (rbAsc == null || rbDesc == null || rbAll == null || rbWins == null ||
                 rbLosses == null || rbAllModes == null || rbModeA == null ||
                 rbModeB == null || rbModeC == null || etName == null ||
                 btnClear == null || btnApply == null) {
-            // Opcional: Log.e(...) y cerrar el diálogo
             dismiss();
             return dialog;
         }
 
-        // --- Inicializar UI con el estado actual ---
         if (current != null) {
             if (current.order == FilterState.Order.SEEDS_ASC) rbAsc.setChecked(true);
             else rbDesc.setChecked(true);

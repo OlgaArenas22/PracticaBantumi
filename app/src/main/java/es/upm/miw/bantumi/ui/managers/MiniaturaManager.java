@@ -17,7 +17,6 @@ public class MiniaturaManager {
     public Bitmap crearMiniaturaCuadrada(View root, int thumbSize) {
         if (root == null) return null;
 
-        // Asegurar que la vista está medida y maquetada
         if (root.getWidth() == 0 || root.getHeight() == 0) {
             int specW = View.MeasureSpec.makeMeasureSpec(3000, View.MeasureSpec.AT_MOST);
             int specH = View.MeasureSpec.makeMeasureSpec(3000, View.MeasureSpec.AT_MOST);
@@ -25,12 +24,10 @@ public class MiniaturaManager {
             root.layout(0, 0, root.getMeasuredWidth(), root.getMeasuredHeight());
         }
 
-        // 1️⃣ Dibujamos todo el contenido actual
         Bitmap full = Bitmap.createBitmap(root.getWidth(), root.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(full);
         root.draw(canvas);
 
-        // 2️⃣ Definimos una zona central donde está el tablero
         int cropTop = (int) (full.getHeight() * 0.13f);
         int cropBottom = (int) (full.getHeight() * 0.42f);
         int cropHeight = cropBottom - cropTop;
@@ -42,10 +39,8 @@ public class MiniaturaManager {
 
         Bitmap cropped = Bitmap.createBitmap(full, x, y, side, side);
 
-        // 3️⃣ Escalamos a 72x72
         Bitmap scaled = Bitmap.createScaledBitmap(cropped, thumbSize, thumbSize, true);
 
-        // 4️⃣ Bordes redondeados (radio = 12 px por ejemplo)
         Bitmap rounded = Bitmap.createBitmap(thumbSize, thumbSize, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(rounded);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -55,7 +50,6 @@ public class MiniaturaManager {
         c.clipPath(path);
         c.drawBitmap(scaled, 0, 0, paint);
 
-        // Liberamos bitmaps intermedios
         full.recycle();
         cropped.recycle();
         scaled.recycle();

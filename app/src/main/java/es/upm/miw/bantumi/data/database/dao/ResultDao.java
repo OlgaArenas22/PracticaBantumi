@@ -1,6 +1,5 @@
 package es.upm.miw.bantumi.data.database.dao;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;

@@ -24,7 +24,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Scroll (ancho del padre, altura limitada para que no tape el título) -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollMensaje"
         android:layout_width="match_parent"
@@ -51,7 +50,6 @@
             android:paddingBottom="8dp"/>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Botón fijo abajo -->
     <LinearLayout
         android:id="@+id/buttonContainer"
         android:layout_width="match_parent"

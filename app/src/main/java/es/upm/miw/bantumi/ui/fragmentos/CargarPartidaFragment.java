@@ -51,10 +51,8 @@ public class CargarPartidaFragment extends Fragment implements CargarPartidaAdap
         rv = v.findViewById(R.id.recycler_saves);
         rv.setLayoutManager(new GridLayoutManager(requireContext(), 3));
 
-        // === LO QUE YA TENÍAS: construir items y setear adapter ===
         adapter = new CargarPartidaAdapter(buildItems(), this);
 
-        // === NUEVO: callback de papelera para abrir tu diálogo personalizado ===
         adapter.setOnDeleteClick(filename -> {
             if (filename == null || filename.isEmpty()) return;
             new EliminarPartidaDialog(filename)
@@ -63,12 +61,10 @@ public class CargarPartidaFragment extends Fragment implements CargarPartidaAdap
 
         rv.setAdapter(adapter);
 
-        // === NUEVO: observar confirmación de borrado y refrescar ===
         vm.deleteConfirmed.observe(getViewLifecycleOwner(), filename -> {
             if (filename == null || filename.isEmpty()) return;
             boolean ok = cargarMgr.deleteSave(filename);
             if (ok) {
-                // reconstruimos items (desplaza hacia delante, sin renumerar IDs) y reasignamos adapter
                 adapter = new CargarPartidaAdapter(buildItems(), this);
                 adapter.setOnDeleteClick(f -> {
                     if (f == null || f.isEmpty()) return;

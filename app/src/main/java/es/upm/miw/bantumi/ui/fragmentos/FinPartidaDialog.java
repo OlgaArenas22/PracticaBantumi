@@ -53,7 +53,6 @@ public class FinPartidaDialog extends DialogFragment {
             ivCrown.setImageResource(R.drawable.ic_crown_broken);
         }
 
-        // Debajo del resultado, solo el nombre del jugador 1
         tvPlayer1.setText(player1name);
 
         Dialog dialog = new MaterialAlertDialogBuilder(requireContext(), R.style.TransparentDialog)

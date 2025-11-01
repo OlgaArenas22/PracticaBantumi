@@ -2,11 +2,6 @@ package es.upm.miw.bantumi.data.network;
 
 import android.content.Context;
 
-import androidx.lifecycle.LiveData;
-import androidx.sqlite.db.SimpleSQLiteQuery;
-import androidx.sqlite.db.SupportSQLiteQuery;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,8 +21,6 @@ public class ResultRepository {
         this.io  = Executors.newSingleThreadExecutor();
     }
 
-
-    // NUEVO: lista sin LiveData
     public List<ResultEntity> getTop10ByBestSeedsList() {
         return dao.getTop10ByBestSeedsList();
     }

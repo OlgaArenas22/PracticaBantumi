@@ -35,7 +35,6 @@ public class ResultadosFragment extends Fragment {
     private TextView emptyText;
 
     public ResultadosFragment() {
-        // Constructor vacío requerido
     }
 
     public static ResultadosFragment newInstance() {
@@ -56,22 +55,18 @@ public class ResultadosFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // --- Referencias UI ---
         recyclerView = view.findViewById(R.id.results_recycler);
         btnClose = view.findViewById(R.id.btn_close_results);
         btnDeleteAll = view.findViewById(R.id.btn_delete_all);
         emptyText = view.findViewById(R.id.results_empty_text);
         ImageButton btnFilter = view.findViewById(R.id.btn_filter);
 
-        // --- ViewModel ---
         viewModel = new ViewModelProvider(requireActivity()).get(ResultadosViewModel.class);
 
-        // --- Configuración RecyclerView ---
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 1));
         adapter = new ResultadosAdapter();
         recyclerView.setAdapter(adapter);
 
-        // --- Botón Cerrar ---
         btnClose.setOnClickListener(v ->
                 requireActivity().getSupportFragmentManager().popBackStack()
         );
@@ -93,7 +88,6 @@ public class ResultadosFragment extends Fragment {
         });
 
 
-        // --- Botón Borrar Todos ---
         btnDeleteAll.setOnClickListener(v -> {
             if (adapter == null || adapter.getItemCount() == 0) {
                 new NingunResultadoBorrarDialog()
@@ -104,7 +98,6 @@ public class ResultadosFragment extends Fragment {
             }
         });
 
-        // --- Observadores ---
         viewModel.getResults().observe(getViewLifecycleOwner(), this::renderList);
         viewModel.getDeleteAllSuccess().observe(getViewLifecycleOwner(), success -> {
             if (Boolean.TRUE.equals(success) && getView() != null) {
@@ -119,7 +112,6 @@ public class ResultadosFragment extends Fragment {
 
         viewModel.loadDefault();
 
-        // --- Comportamiento del botón físico “atrás” ---
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {

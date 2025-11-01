@@ -49,7 +49,6 @@ public class ResultadosAdapter extends RecyclerView.Adapter<ResultadosAdapter.VH
         ResultEntity e = data.get(position);
         Resources r = h.itemView.getResources();
 
-        // 1) Posición / trofeo
         if (position == 0) {
             setTrophy(h, R.drawable.ic_first_trophy);
         } else if (position == 1) {
@@ -62,21 +61,16 @@ public class ResultadosAdapter extends RecyclerView.Adapter<ResultadosAdapter.VH
             h.posText.setText(String.valueOf(position + 1));
         }
 
-        // 2) Nombre + corona/rota
         h.playerName.setText(e.player1Name);
         h.crownIcon.setImageResource(e.player1Won ? R.drawable.ic_crown : R.drawable.ic_crown_broken);
 
-        // 3) Semillas P1 y 4) Semillas P2
         h.seedsP1.setText(String.valueOf(e.seedsPlayer1));
         h.seedsP2.setText(String.valueOf(e.seedsPlayer2));
 
-        // 5) Modo -> icono
         h.modeIcon.setImageResource(iconForMode(e.mode));
 
-        // 6) Tiempo
         h.timeText.setText(formatElapsed(e.elapsedMillis));
 
-        // 7) Fecha
         h.dateText.setText(formatDate(e.finishedAtUtc));
     }
 

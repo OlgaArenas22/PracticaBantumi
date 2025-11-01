@@ -7,7 +7,6 @@
     android:padding="20dp"
     android:background="@drawable/bg_dialog">
 
-    <!-- Título -->
     <TextView
         android:id="@+id/tvTitleDialog"
         android:layout_width="match_parent"
@@ -24,8 +23,6 @@
         android:shadowDy="2"
         android:shadowRadius="3"/>
 
-
-    <!-- Campo de texto -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,7 +44,6 @@
             />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Botón Confirmar -->
     <Button
         android:id="@+id/btnConfirmarNombre"
         android:layout_width="wrap_content"

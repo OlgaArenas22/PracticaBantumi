@@ -82,14 +82,12 @@ public class JuegoBantumi {
             setSemillas(posContrario, 0);
         }
 
-        // Fin de juego -> recolectar y terminar
         if (campoVacio(Turno.turnoJ1) || campoVacio(Turno.turnoJ2)) {
             recolectar(0);
             recolectar(7);
             setTurno(Turno.Turno_TERMINADO);
         }
 
-        // Siguiente turno (si no cayó en su propio almacén)
         if (turnoActual() == Turno.turnoJ1 && nextPos != 6) setTurno(Turno.turnoJ2);
         else if (turnoActual() == Turno.turnoJ2 && nextPos != 13) setTurno(Turno.turnoJ1);
 

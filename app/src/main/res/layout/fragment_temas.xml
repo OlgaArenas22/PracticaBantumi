@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragmentos.TemasFragment">
 
-    <!-- ===== PREVIEW DE TABLERO (no interactivo) ===== -->
     <LinearLayout
         android:id="@+id/previewBoard"
         android:layout_width="match_parent"
@@ -37,7 +36,6 @@
             android:orientation="horizontal"
             android:paddingHorizontal="8dp">
 
-            <!-- Almacén J2 -->
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -55,7 +53,6 @@
                 android:layout_weight="12"
                 android:orientation="vertical">
 
-                <!-- Fila J2 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -97,7 +94,6 @@
                         android:text="4"/>
                 </LinearLayout>
 
-                <!-- Fila J1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -141,7 +137,6 @@
 
             </LinearLayout>
 
-            <!-- Almacén J1 -->
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -169,8 +164,6 @@
             android:textColor="@color/white" />
     </LinearLayout>
 
-    <!-- ===== PANEL INFERIOR: ELIGE UN TEMA (con fondo teal y X roja) ===== -->
-    <!-- ===== PANEL INFERIOR: ELIGE UN TEMA (fondo teal y X roja) ===== -->
     <LinearLayout
         android:id="@+id/selectorZona"
         android:layout_width="match_parent"
@@ -182,7 +175,6 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!-- Header: título centrado + X roja a la derecha -->
         <RelativeLayout
             android:id="@+id/headerSelector"
             android:layout_width="match_parent"
@@ -210,7 +202,6 @@
                 app:tint="@color/white"/>
         </RelativeLayout>
 
-        <!-- Grid centrado justo debajo del título -->
         <GridLayout
             android:id="@+id/gridTemas"
             android:layout_width="wrap_content"

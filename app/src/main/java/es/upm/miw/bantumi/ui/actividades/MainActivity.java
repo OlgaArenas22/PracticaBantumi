@@ -1,7 +1,5 @@
 package es.upm.miw.bantumi.ui.actividades;
 
-import androidx.appcompat.app.AlertDialog;
-
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -23,7 +21,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Locale;
 
@@ -74,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void markSelected(int pos) {
         try {
-            // Desmarcar anterior
             if (selectedPitView != null) selectedPitView.setSelected(false);
 
             selectedPitIndex = pos;
@@ -84,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
             v.setSelected(true);
 
-            // Si la vista no está lista para animarse, difiere la animación
             boolean attached = androidx.core.view.ViewCompat.isAttachedToWindow(v);
             boolean laidOut = androidx.core.view.ViewCompat.isLaidOut(v); // true si ya tiene medidas/pos
             if (!attached || !laidOut || v.getWidth() == 0 || v.getHeight() == 0) {
@@ -93,13 +88,11 @@ public class MainActivity extends AppCompatActivity {
                 safePulse(v);
             }
         } catch (Throwable t) {
-            // Fallback ultra seguro: no animar, solo estado visual
             if (selectedPitView != null) selectedPitView.setSelected(true);
         }
     }
     private void safePulse(@NonNull View v) {
         try {
-            // Usa referencia local; no dependas de selectedPitView que puede cambiar
             v.animate().cancel();
             v.animate()
                     .scaleX(1.06f)
@@ -112,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .start();
         } catch (Throwable ignore) {
-            // Si fallara por cualquier motivo, simplemente no animamos
         }
     }
 
@@ -124,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         }
         selectedPitIndex = -1;
     }
-    // === Fin selección ===
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -259,15 +250,14 @@ public class MainActivity extends AppCompatActivity {
         try {
             String estado = save.getString("estado");
             juegoBantumi.deserializa(estado);
-            // 🎨 Restaurar tema si viene en el save
             String themeRaw = save.optString("theme", null);
             if (themeRaw != null) {
                 try {
                     ThemeManager.ThemeId id =
                             ThemeManager.ThemeId.valueOf(themeRaw);
                     ThemeManager.setSelectedTheme(getApplicationContext(), id);
-                    ThemeManager.applyThemeToRoot(this); // aplica fondo inmediatamente
-                } catch (IllegalArgumentException ignore) { /* tema desconocido: ignora */ }
+                    ThemeManager.applyThemeToRoot(this);
+                } catch (IllegalArgumentException ignore) {}
             }
 
 
@@ -302,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
         bantumiVM = new ViewModelProvider(this).get(BantumiViewModel.class);
         juegoBantumi = new JuegoBantumi(bantumiVM, turnoInicial, numInicialSemillas);
 
-        // Escuchar casilla elegida (J1 y J2)
         juegoBantumi.setOnPitSelectedListener(pos -> runOnUiThread(() -> markSelected(pos)));
 
         crearObservadores();
@@ -319,7 +308,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
         bantumiVM.getTurno().observe(this, turno -> {
-            // Pequeño delay para permitir que el highlight recién puesto se vea 1 instante
             new Handler(Looper.getMainLooper()).postDelayed(this::clearSelected, 1000);
             marcarTurno(juegoBantumi.turnoActual());
         });
@@ -419,11 +407,11 @@ public class MainActivity extends AppCompatActivity {
         switch (juegoBantumi.turnoActual()) {
             case turnoJ1:
                 Log.i(LOG_TAG, "* Juega Jugador");
-                juegoBantumi.jugar(num); // emitirá onPitSelected(num) -> markSelected(num)
+                juegoBantumi.jugar(num);
                 break;
             case turnoJ2:
                 Log.i(LOG_TAG, "* Juega Computador");
-                juegoBantumi.juegaComputador(); // IA llamará a jugar() y también emitirá
+                juegoBantumi.juegaComputador();
                 break;
             default:
                 finJuego();
@@ -435,7 +423,6 @@ public class MainActivity extends AppCompatActivity {
 
     /** Fin de juego */
     private void finJuego() {
-        // limpiar selección por si quedara marcada
         clearSelected();
 
         stopCronometro();

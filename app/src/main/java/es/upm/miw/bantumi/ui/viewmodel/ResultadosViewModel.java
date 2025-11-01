@@ -18,45 +18,35 @@ public class ResultadosViewModel extends AndroidViewModel {
 
     private final ResultRepository repository;
 
-    // Resultado que consume el Fragment (lista actual: por defecto o filtrada)
     private final MutableLiveData<List<ResultEntity>> results = new MutableLiveData<>();
     public LiveData<List<ResultEntity>> getResults() { return results; }
 
-    // Estado de borrado
     private final MutableLiveData<Boolean> deleteAllSuccess = new MutableLiveData<>();
     private final MutableLiveData<Boolean> deleteAllError = new MutableLiveData<>();
     public LiveData<Boolean> getDeleteAllSuccess() { return deleteAllSuccess; }
     public LiveData<Boolean> getDeleteAllError() { return deleteAllError; }
 
-    // Estado de filtros
     private final MutableLiveData<FilterState> currentFilter = new MutableLiveData<>(FilterState.defaults());
     public FilterState getCurrentFilter() { return currentFilter.getValue(); }
 
-    // Ejecutores para operaciones en background
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public ResultadosViewModel(@NonNull Application application) {
         super(application);
         repository = ResultRepository.getInstance(application);
-        // Carga inicial: comportamiento por defecto (lo que ya tenías)
         loadDefault();
     }
-
-    /* ----------------------------------------------------------
-       CARGA / REFRESCO
-       ---------------------------------------------------------- */
 
     /** Carga por defecto: top 10 por mayor nº de semillas (sin filtros), como ahora */
     public void loadDefault() {
         executor.execute(() -> {
             List<ResultEntity> list = repository.getTop10ByBestSeedsList();
             results.postValue(list);
-            // Aseguramos que el estado de filtro es "por defecto"
             currentFilter.postValue(FilterState.defaults());
         });
     }
 
-    /** Aplica un filtro (sobre TODO el set, y al final limit 10) */
+    /** Aplica un filtro */
     public void applyFilter(FilterState filter) {
         currentFilter.setValue(filter);
         if (isDefault(filter)) {
@@ -85,15 +75,10 @@ public class ResultadosViewModel extends AndroidViewModel {
         else loadFiltered(f);
     }
 
-    /* ----------------------------------------------------------
-       BORRADO
-       ---------------------------------------------------------- */
-
     public void confirmDeleteAll() {
         repository.deleteAll(new ResultRepository.Callback() {
             @Override public void onSuccess() {
                 deleteAllSuccess.postValue(true);
-                // Tras borrar, recarga según el filtro actual (quedará vacío o con nueva consulta)
                 refreshCurrent();
             }
             @Override public void onError(Exception e) {
@@ -102,14 +87,10 @@ public class ResultadosViewModel extends AndroidViewModel {
         });
     }
 
-    /* ----------------------------------------------------------
-       UTILIDADES
-       ---------------------------------------------------------- */
 
     /** Comprueba si el filtro equivale al comportamiento por defecto. */
     private boolean isDefault(FilterState f) {
         if (f == null) return true;
-        // Por defecto: orden SEEDS_DESC (como tu ranking), ALL, sin modo, sin nombre
         return f.order == FilterState.Order.SEEDS_DESC
                 && f.outcome == FilterState.Outcome.ALL
                 && (f.mode == null || f.mode.isEmpty())

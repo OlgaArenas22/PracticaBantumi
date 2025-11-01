@@ -17,7 +17,6 @@ import es.upm.miw.bantumi.R;
 public class NingunResultadoBorrarDialog extends DialogFragment {
 
     public NingunResultadoBorrarDialog() {
-        // requerido
     }
 
     @NonNull

@@ -8,7 +8,6 @@
     android:clipToPadding="false"
     android:clipChildren="false">
 
-    <!-- Título centrado -->
     <TextView
         android:id="@+id/results_title"
         android:layout_width="wrap_content"
@@ -20,7 +19,6 @@
         android:padding="16dp"
         android:layout_centerHorizontal="true" />
 
-    <!-- Botón cerrar (X) -->
     <ImageButton
         android:id="@+id/btn_close_results"
         android:layout_width="40dp"
@@ -33,7 +31,6 @@
         android:scaleType="centerInside"
         android:src="@android:drawable/ic_menu_close_clear_cancel" />
 
-    <!-- Papelera: debajo del título -->
     <ImageButton
         android:id="@+id/btn_delete_all"
         android:layout_width="28dp"
@@ -57,7 +54,6 @@
         app:tint="@color/white"
         android:contentDescription="@string/txtFiltrar" />
 
-    <!-- Texto vacío (cuando no hay datos) -->
     <TextView
         android:id="@+id/results_empty_text"
         android:layout_width="match_parent"
@@ -70,7 +66,6 @@
         android:gravity="center_horizontal"
         android:visibility="gone" />
 
-    <!-- CONTENEDOR HORIZONTAL: cabecera + lista -->
     <HorizontalScrollView
         android:id="@+id/results_hscroll"
         android:layout_width="match_parent"
@@ -79,19 +74,16 @@
         android:fillViewport="true"
         android:scrollbars="horizontal">
 
-        <!-- Vertical: cabecera fija arriba, lista debajo -->
         <LinearLayout
             android:id="@+id/results_scroll_content"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <!-- Cabecera de columnas (ancho alineado con las filas) -->
             <include
                 android:id="@+id/results_header"
                 layout="@layout/results_header" />
 
-            <!-- Lista (scroll vertical) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/results_recycler"
                 android:layout_width="wrap_content"

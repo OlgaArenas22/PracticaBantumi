@@ -67,8 +67,6 @@ public class CargarPartidaManager {
         }
     }
 
-
-    //region Borrar partida
     public boolean deleteSave(String filename) {
         try {
             JSONObject idx = loadIndex();
@@ -83,21 +81,17 @@ public class CargarPartidaManager {
                 if (o == null) continue;
                 String fn = o.optString("filename", "");
                 if (filename.equals(fn)) {
-                    thumbRel = o.optString("thumb", null); // p.ej: "saves/thumbs/thumb_3.png" o "thumbs/thumb_3.png"
-                    // no lo añadimos -> eliminado
+                    thumbRel = o.optString("thumb", null);
                 } else {
                     newSaves.put(o);
                 }
             }
 
-            // Mantener next_id tal cual
             idx.put("saves", newSaves);
             writeIndex(idx);
 
-            // Borrar JSON de la partida
             deleteFileIn(JSON_DIR, filename);
 
-            // Borrar miniatura (thumbRelativePath se guarda respecto a filesDir; usamos tal cual)
             if (thumbRel != null && !thumbRel.isEmpty()) {
                 File thumbFile = new File(appContext.getFilesDir(), thumbRel);
                 if (thumbFile.exists()) thumbFile.delete();

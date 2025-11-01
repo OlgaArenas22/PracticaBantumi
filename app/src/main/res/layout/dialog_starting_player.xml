@@ -6,7 +6,6 @@
     android:background="@drawable/bg_dialog"
     android:padding="24dp">
 
-    <!-- Título -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -26,7 +25,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="24dp" />
 
-    <!-- Contenedor horizontal para los botones -->
     <LinearLayout
         android:id="@+id/buttonContainer"
         android:layout_width="wrap_content"

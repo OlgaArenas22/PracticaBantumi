@@ -13,7 +13,6 @@ import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 public class GuardarPartidaManager {
 
-    // ======= Configuración general =======
     public static final int MAX_SAVES   = 10;
     public static final int THUMB_SIZE  = 200;
     private static final String SAVES_DIR   = "saves";
@@ -30,7 +29,6 @@ public class GuardarPartidaManager {
         this.appContext = context.getApplicationContext();
     }
 
-    // ======= Clase auxiliar para devolver resultado =======
     public static class SaveResult {
         public final boolean ok;
         public final String titleOrMessage;
@@ -63,10 +61,8 @@ public class GuardarPartidaManager {
             String jsonFilename  = SAVE_FILE_PREFIX + nextId + SAVE_FILE_EXT;
             String thumbFilename = THUMB_PREFIX + nextId + THUMB_EXT;
 
-            // 1) Guardar miniatura
             String thumbRelPath = saveThumbnail(thumbnail, thumbFilename);
 
-            // 2) Guardar JSON de la partida
             JSONObject saveData = new JSONObject();
             saveData.put("id", nextId);
             saveData.put("title", title);
@@ -79,12 +75,10 @@ public class GuardarPartidaManager {
             saveData.put("thumbnail", thumbRelPath);
             saveData.put("seeds", numIniSeeds);
 
-            // 🎨 Guardar el tema actual
             saveData.put("theme", themeId);
 
             writeWholeFileIn(JSON_DIR, jsonFilename, saveData.toString());
 
-            // 3) Actualizar índice
             JSONObject meta = new JSONObject();
             meta.put("id", nextId);
             meta.put("title", title);

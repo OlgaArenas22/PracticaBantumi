@@ -30,7 +30,6 @@
         android:scaleType="centerInside"
         android:src="@android:drawable/ic_menu_close_clear_cancel" />
 
-    <!-- Grid 3 columnas -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_saves"
         android:layout_width="match_parent"
